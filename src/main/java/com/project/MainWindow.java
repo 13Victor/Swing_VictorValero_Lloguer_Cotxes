@@ -13,7 +13,7 @@ public class MainWindow extends JFrame {
     private CategoriaController categoriaController;
     private CategoriaView categoriaView;
 
-    private ProducteController producteController;
+    private RentalController rentalController;
     private ProducteView producteView;
 
     private ClientsController clientsController;
@@ -34,8 +34,8 @@ public class MainWindow extends JFrame {
         // Inicialitza els controladors amb els models i vistes carregats
         categoriaController = new CategoriaController(categoriaView, tabbedPane);
         categoriaController.start();
-        producteController = new ProducteController(producteView, tabbedPane);
-        producteController.start();
+        rentalController = new RentalController(producteView, tabbedPane);
+        rentalController.start();
         clientsController = new ClientsController(clientsView, tabbedPane);
         clientsController.start();
         clientsVehiclesController = new ClientsVehiclesController(clientsVehiclesView, tabbedPane);

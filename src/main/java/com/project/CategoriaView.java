@@ -24,6 +24,8 @@ public class CategoriaView extends JPanel {
     }
 
     private void initComponents() {
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setBackground(UIStyle.BACKGROUND_COLOR);
 
         // Espai superior fins als botons
         add(Box.createRigidArea(new Dimension(0, 10)));
@@ -77,6 +79,28 @@ public class CategoriaView extends JPanel {
 
         // Expandir verticalment (per pujar els elements la resta d'elements)
         add(Box.createVerticalGlue());
+
+        // Apply styles
+        UIStyle.styleButton(reloadButton, UIStyle.PRIMARY_COLOR);
+        UIStyle.styleButton(addButton, UIStyle.PRIMARY_COLOR);
+        UIStyle.styleButton(modifyButton, UIStyle.PRIMARY_COLOR);
+        UIStyle.styleButton(deleteButton, UIStyle.DANGER_COLOR);
+
+        UIStyle.styleTextField(itemNameField);
+        UIStyle.styleTextField(itemName2Field);
+        UIStyle.styleTextField(itemYearField);
+        UIStyle.styleTextField(itemAvailabilityField);
+        UIStyle.styleTextField(itemPhotoField);
+        
+        UIStyle.styleComboBox(itemComboBox);
+
+        // Style checkboxes and labels
+        newItemCheckBox.setFont(UIStyle.LABEL_FONT);
+        loadingLabel.setFont(UIStyle.LABEL_FONT);
+
+        // Set colors
+        loadingLabel.setForeground(Color.RED);
+        setBackground(UIStyle.BACKGROUND_COLOR);
     }
 
     // Crea una fila amb una etiqueta i un component interactiu SWING

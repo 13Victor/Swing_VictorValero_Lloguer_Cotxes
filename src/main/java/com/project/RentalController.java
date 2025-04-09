@@ -5,7 +5,8 @@ import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import javax.swing.JTabbedPane;
 
-public class ProducteController {
+// Rename class to RentalController
+public class RentalController {
 
     private static final int STATUS_LOADING = 0;
     private static final int STATUS_ADD = 1;
@@ -18,7 +19,7 @@ public class ProducteController {
     private ArrayList<ClientsModel> listClients;
     private JTabbedPane tabbedPane;
 
-    public ProducteController(ProducteView view, JTabbedPane tabbedPane) {
+    public RentalController(ProducteView view, JTabbedPane tabbedPane) {
         this.view = view;
         this.listProducts = new ArrayList<>();
         this.tabbedPane = tabbedPane;
@@ -27,6 +28,7 @@ public class ProducteController {
     // Acciones para iniciar el controlador
     public void start() {
         setupActionListeners();
+        setStatus(STATUS_ADD); // Forzar estado inicial a ADD
         loadData();
         // No pongas más instrucciones aquí,
         // porque hemos abierto un hilo en paralelo en 'loadData'
@@ -73,7 +75,21 @@ public class ProducteController {
                 view.itemComboBox.removeAllItems();
 
                 for (ProducteModel itemModel : listProducts) {
-                    view.itemComboBox.addItem("Inici: " + itemModel.getDataInici() + "  |  Final: " + itemModel.getDataFinal());
+                    // Get vehicle and client info for better display
+                    CategoriaModel vehicle = CategoriaDAO.getItem(itemModel.getIdVehicle());
+                    ClientsModel client = ClientsDAO.getItem(itemModel.getIdClient());
+                    
+                    String vehicleInfo = vehicle != null ? vehicle.getMarca() + " " + vehicle.getModel() : "Unknown";
+                    String clientInfo = client != null ? client.getNom() : "Unknown";
+                    
+                    // Format the display string with vehicle, client and dates
+                    String displayText = String.format("%s | %s | %s - %s",
+                        vehicleInfo,
+                        clientInfo,
+                        itemModel.getDataInici(),
+                        itemModel.getDataFinal());
+                        
+                    view.itemComboBox.addItem(displayText);
                 }
 
                 view.itemComboBox.setSelectedIndex(newSelected);
@@ -105,10 +121,15 @@ public class ProducteController {
         loadData();
     }
 
+    // Fix checkbox state management
     private void controllerNewItemCheckBoxAction(ItemEvent evt) {
-        boolean isSelected = (evt.getStateChange() == ItemEvent.SELECTED);
-        setStatus(isSelected ? STATUS_ADD : STATUS_MODIFY);
-        view.itemComboBox.setEnabled(!isSelected);
+        boolean isNew = evt.getStateChange() == ItemEvent.SELECTED;
+        setStatus(isNew ? STATUS_ADD : STATUS_MODIFY);
+        
+        // Force proper state
+        view.newItemCheckBox.setSelected(isNew);
+        view.itemComboBox.setEnabled(!isNew);
+        
         fillFormData();
     }
 

@@ -9,15 +9,16 @@ com\project\CategoriaView.class
 com\project\ClientsVehiclesDAO.class
 com\project\Main.class
 com\project\ClientsModel.class
+com\project\UIStyle.class
 com\project\Main$1.class
 com\project\ClientsDAO.class
+com\project\RentalController.class
 com\project\UtilsSwingThread$1.class
 com\project\ProducteModel.class
 com\project\MainWindow.class
 com\project\ClientsView.class
 com\project\ClientsController.class
 com\project\ClientsVehiclesController.class
-com\project\ProducteController.class
 com\project\CategoriaDAO.class
 com\project\ProducteDAO.class
 com\project\ClientsVehiclesModel.class

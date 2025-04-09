@@ -130,15 +130,14 @@ public class CategoriaController {
     }
 
     // Quan s'apreta el 'checkBox' es posa en mode 'afegir' o 'modificar/esborrar'
-    private void controllerNewItemCheckBoxAction (ItemEvent evt) {
-        boolean isSelected = (evt.getStateChange() == ItemEvent.SELECTED);
-        if (isSelected) {
-            setStatus(STATUS_ADD);
-            view.itemComboBox.setEnabled(false);
-        } else {
-            setStatus(STATUS_MODIFY);
-            view.itemComboBox.setEnabled(true);
-        }
+    private void controllerNewItemCheckBoxAction(ItemEvent evt) {
+        boolean isNew = evt.getStateChange() == ItemEvent.SELECTED;
+        setStatus(isNew ? STATUS_ADD : STATUS_MODIFY);
+        
+        // Force proper state
+        view.newItemCheckBox.setSelected(isNew);
+        view.itemComboBox.setEnabled(!isNew);
+        
         fillFormData();
     }
 

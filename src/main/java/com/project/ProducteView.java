@@ -24,10 +24,13 @@ public class ProducteView extends JPanel {
 
     public ProducteView() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        newItemCheckBox.setSelected(true); // Inicializar como seleccionado
         initComponents();
     }
 
     private void initComponents() {
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setBackground(UIStyle.BACKGROUND_COLOR);
 
         // Espai superior fins als botons
         add(Box.createRigidArea(new Dimension(0, 10)));
@@ -38,7 +41,7 @@ public class ProducteView extends JPanel {
         horizPanel0.setPreferredSize(sizeHorizPanel0);
         horizPanel0.setLayout(new BoxLayout(horizPanel0, BoxLayout.X_AXIS));
         horizPanel0.add(reloadButton);
-        horizPanel0.add(Box.createHorizontalGlue()); // Estira l'espai entre els botons
+        horizPanel0.add(Box.createHorizontalGlue()); 
         horizPanel0.add(loadingLabel);
         loadingLabel.setVisible(false);
         loadingLabel.setForeground(Color.RED);
@@ -80,6 +83,62 @@ public class ProducteView extends JPanel {
 
         // Expandir verticalment (per pujar els elements la resta d'elements)
         add(Box.createVerticalGlue());
+
+        // Style components
+        UIStyle.styleButton(reloadButton, UIStyle.PRIMARY_COLOR);
+        UIStyle.styleButton(addButton, UIStyle.PRIMARY_COLOR);
+        UIStyle.styleButton(modifyButton, UIStyle.PRIMARY_COLOR);
+        UIStyle.styleButton(deleteButton, UIStyle.DANGER_COLOR);
+
+        UIStyle.styleTextField(itemNameField);
+        UIStyle.styleTextField(itemDescriptionField);
+        
+        UIStyle.styleComboBox(itemComboBox);
+        UIStyle.styleComboBox(categoryComboBox);
+        UIStyle.styleComboBox(clientComboBox);
+
+        // Style checkboxes and labels
+        newItemCheckBox.setFont(UIStyle.LABEL_FONT);
+        loadingLabel.setFont(UIStyle.LABEL_FONT);
+
+        // Apply modern look to components
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setBackground(new Color(240, 240, 240));
+        
+        // Style the buttons
+        Color buttonColor = new Color(70, 130, 180);
+        Font buttonFont = new Font("Arial", Font.BOLD, 12);
+        
+        reloadButton.setBackground(buttonColor);
+        reloadButton.setForeground(Color.WHITE);
+        reloadButton.setFont(buttonFont);
+        reloadButton.setBorderPainted(false);
+        reloadButton.setFocusPainted(false);
+        
+        addButton.setBackground(buttonColor);
+        addButton.setForeground(Color.WHITE);
+        addButton.setFont(buttonFont);
+        addButton.setBorderPainted(false);
+        addButton.setFocusPainted(false);
+        
+        modifyButton.setBackground(buttonColor);
+        modifyButton.setForeground(Color.WHITE);
+        modifyButton.setFont(buttonFont);
+        modifyButton.setBorderPainted(false);
+        modifyButton.setFocusPainted(false);
+        
+        deleteButton.setBackground(new Color(180, 70, 70));
+        deleteButton.setForeground(Color.WHITE);
+        deleteButton.setFont(buttonFont);
+        deleteButton.setBorderPainted(false);
+        deleteButton.setFocusPainted(false);
+
+        // Style the combo box
+        itemComboBox.setBackground(Color.WHITE);
+        itemComboBox.setFont(new Font("Arial", Font.PLAIN, 12));
+        
+        // Add spacing between components
+        add(Box.createRigidArea(new Dimension(0, 5)));
     }
 
     // Crea una fila amb una etiqueta i un component interactiu SWING

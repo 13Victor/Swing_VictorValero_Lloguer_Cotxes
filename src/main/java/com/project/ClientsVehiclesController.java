@@ -30,6 +30,7 @@ public class ClientsVehiclesController {
     // Acciones para iniciar el controlador
     public void start() {
         setupActionListeners();
+        setStatus(STATUS_ADD); // Forzar estado inicial a ADD
         loadData();
         // No pongas más instrucciones aquí,
         // porque hemos abierto un hilo en paralelo en 'loadData'
@@ -79,14 +80,12 @@ public class ClientsVehiclesController {
                     int clientId = itemModel.getIdClient();
                     int vehicleId = itemModel.getIdVehicle();
                 
-                    // Obtener el nombre del cliente
                     String clientName = getClientNameById(clientId);
-                
-                    // Obtener la marca del vehículo
                     String vehicleBrand = getVehicleBrandById(vehicleId);
+                    String rentalDates = getRentalDatesForClientAndVehicle(clientId, vehicleId);
                 
-                    // Agregar la entrada al JComboBox con el nombre del cliente y la marca del vehículo
-                    view.itemComboBox.addItem("Vehicle: " + vehicleBrand + " | Client: " + clientName);
+                    view.itemComboBox.addItem(String.format("%s | %s | %s", 
+                        vehicleBrand, clientName, rentalDates));
                 }
                 
 
@@ -109,6 +108,11 @@ public class ClientsVehiclesController {
         view.newItemCheckBox.setEnabled(!isLoading);
         view.itemComboBox.setEnabled(!isLoading && status == STATUS_MODIFY);
         view.itemObservationsField.setEnabled(!isLoading);
+        
+        // Only enable vehicle/client selection when adding new observation
+        view.categoryComboBox.setEnabled(!isLoading && status == STATUS_ADD);
+        view.clientComboBox.setEnabled(!isLoading && status == STATUS_ADD);
+        
         view.addButton.setEnabled(!isLoading && status == STATUS_ADD);
         view.modifyButton.setEnabled(!isLoading && status == STATUS_MODIFY);
         view.deleteButton.setEnabled(!isLoading && status == STATUS_MODIFY);
@@ -118,10 +122,17 @@ public class ClientsVehiclesController {
         loadData();
     }
 
+    // Fix checkbox state management
     private void controllerNewItemCheckBoxAction(ItemEvent evt) {
-        boolean isSelected = (evt.getStateChange() == ItemEvent.SELECTED);
-        setStatus(isSelected ? STATUS_ADD : STATUS_MODIFY);
-        view.itemComboBox.setEnabled(!isSelected);
+        boolean isNew = evt.getStateChange() == ItemEvent.SELECTED;
+        setStatus(isNew ? STATUS_ADD : STATUS_MODIFY);
+        
+        // Force proper state
+        view.newItemCheckBox.setSelected(isNew);
+        view.itemComboBox.setEnabled(!isNew);
+        view.categoryComboBox.setEnabled(isNew);
+        view.clientComboBox.setEnabled(isNew);
+        
         fillFormData();
     }
 
@@ -275,6 +286,16 @@ public class ClientsVehiclesController {
             }
         }
         return "Marca no encontrada"; // Manejar el caso en que la marca no se encuentre
+    }
+    
+    private String getRentalDatesForClientAndVehicle(int clientId, int vehicleId) {
+        ArrayList<ProducteModel> rentals = ProducteDAO.getAll();
+        for (ProducteModel rental : rentals) {
+            if (rental.getIdClient() == clientId && rental.getIdVehicle() == vehicleId) {
+                return rental.getDataInici() + " - " + rental.getDataFinal();
+            }
+        }
+        return "Sense dates";
     }
     
 }
