@@ -7,7 +7,7 @@ import java.util.Locale;
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 
-public class ProducteView extends JPanel {
+public class RentalView extends JPanel {
 
     public JButton reloadButton = new JButton("Refresca");
     public JCheckBox newItemCheckBox = new JCheckBox("Nou lloguer");
@@ -22,7 +22,7 @@ public class ProducteView extends JPanel {
     public JComboBox<String> categoryComboBox = new JComboBox<>();
     public JComboBox<String> clientComboBox = new JComboBox<>();
 
-    public ProducteView() {
+    public RentalView() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         newItemCheckBox.setSelected(true); // Inicializar como seleccionado
         initComponents();

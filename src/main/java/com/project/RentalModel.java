@@ -1,6 +1,6 @@
 package com.project;
 
-public class ProducteModel {
+public class RentalModel {
     private int id;
     private String data_inici;
     private String data_final;
@@ -8,7 +8,7 @@ public class ProducteModel {
     private int id_client;
 
     // Constructor complet
-    public ProducteModel(int id, String data_inici, String data_final, int id_vehicle, int id_client) {
+    public RentalModel(int id, String data_inici, String data_final, int id_vehicle, int id_client) {
         this.id = id;
         this.data_inici = data_inici;
         this.data_final = data_final;
@@ -17,7 +17,7 @@ public class ProducteModel {
     }
 
     // Constructor sense ID per a nous productes que encara no tenen un ID assignat
-    public ProducteModel(String data_inici, String data_final, int id_vehicle, int id_client) {
+    public RentalModel(String data_inici, String data_final, int id_vehicle, int id_client) {
         this.data_inici = data_inici;
         this.data_final = data_final;
         this.id_vehicle = id_vehicle;

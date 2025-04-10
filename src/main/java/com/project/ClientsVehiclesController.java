@@ -289,10 +289,10 @@ public class ClientsVehiclesController {
     }
     
     private String getRentalDatesForClientAndVehicle(int clientId, int vehicleId) {
-        ArrayList<ProducteModel> rentals = ProducteDAO.getAll();
-        for (ProducteModel rental : rentals) {
+        ArrayList<RentalModel> rentals = RentalDAO.getAll();
+        for (RentalModel rental : rentals) {
             if (rental.getIdClient() == clientId && rental.getIdVehicle() == vehicleId) {
-                return rental.getDataInici() + " - " + rental.getDataFinal();
+                return rental.getDataInici() + " / " + rental.getDataFinal();
             }
         }
         return "Sense dates";

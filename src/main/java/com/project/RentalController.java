@@ -13,13 +13,13 @@ public class RentalController {
     private static final int STATUS_MODIFY = 2;
     private int status = STATUS_ADD;
 
-    private ProducteView view;
+    private RentalView view;
     private ArrayList<CategoriaModel> listCategories;
-    private ArrayList<ProducteModel> listProducts;
+    private ArrayList<RentalModel> listProducts;
     private ArrayList<ClientsModel> listClients;
     private JTabbedPane tabbedPane;
 
-    public RentalController(ProducteView view, JTabbedPane tabbedPane) {
+    public RentalController(RentalView view, JTabbedPane tabbedPane) {
         this.view = view;
         this.listProducts = new ArrayList<>();
         this.tabbedPane = tabbedPane;
@@ -53,7 +53,7 @@ public class RentalController {
 
             // Actualizamos las listas
             listCategories = CategoriaDAO.getAll();
-            listProducts = ProducteDAO.getAll();
+            listProducts = RentalDAO.getAll();
             listClients = ClientsDAO.getAll();
 
             // Simula espera
@@ -66,7 +66,7 @@ public class RentalController {
 
                 if (oldSelected != -1) {
                     String selectedName = view.itemComboBox.getItemAt(oldSelected);
-                    ProducteModel tmp = getListModelFromName(selectedName);
+                    RentalModel tmp = getListModelFromName(selectedName);
                     if (tmp != null) {
                         newSelected = listProducts.indexOf(tmp);
                     }
@@ -74,7 +74,7 @@ public class RentalController {
 
                 view.itemComboBox.removeAllItems();
 
-                for (ProducteModel itemModel : listProducts) {
+                for (RentalModel itemModel : listProducts) {
                     // Get vehicle and client info for better display
                     CategoriaModel vehicle = CategoriaDAO.getItem(itemModel.getIdVehicle());
                     ClientsModel client = ClientsDAO.getItem(itemModel.getIdClient());
@@ -83,7 +83,7 @@ public class RentalController {
                     String clientInfo = client != null ? client.getNom() : "Unknown";
                     
                     // Format the display string with vehicle, client and dates
-                    String displayText = String.format("%s | %s | %s - %s",
+                    String displayText = String.format("%s | %s | %s / %s",
                         vehicleInfo,
                         clientInfo,
                         itemModel.getDataInici(),
@@ -145,10 +145,10 @@ public class RentalController {
             String selectedClientName = (String) view.clientComboBox.getSelectedItem();
             int id_vehicle = getCategoryIDFromName(selectedCategoryName);
             int id_client = getClientIDFromName(selectedClientName);
-            ProducteModel newModel = new ProducteModel(data_inici, data_final, id_vehicle, id_client);
+            RentalModel newModel = new RentalModel(data_inici, data_final, id_vehicle, id_client);
 
             setStatus(STATUS_MODIFY);
-            ProducteDAO.addItem(newModel);
+            RentalDAO.addItem(newModel);
             loadData();
         });
     }
@@ -157,7 +157,7 @@ public class RentalController {
         UtilsSwingThread.run(() -> {
             int index = view.itemComboBox.getSelectedIndex();
             if (index != -1) {
-                ProducteModel modifiedModel = getModelFromComboBoxIndex(index);
+                RentalModel modifiedModel = getModelFromComboBoxIndex(index);
                 if (modifiedModel != null) {
                     String data_inici = view.itemNameField.getText();
                     String data_final = view.itemDescriptionField.getText();
@@ -171,7 +171,7 @@ public class RentalController {
                     modifiedModel.setIdVehicle(id_vehicle);
                     modifiedModel.setIdClient(id_client);
 
-                    ProducteDAO.updateItem(modifiedModel);
+                    RentalDAO.updateItem(modifiedModel);
                     loadData();
                 }
             }
@@ -182,16 +182,16 @@ public class RentalController {
         UtilsSwingThread.run(() -> {
             int index = view.itemComboBox.getSelectedIndex();
             if (index != -1) {
-                ProducteModel modifiedModel = getModelFromComboBoxIndex(index);
+                RentalModel modifiedModel = getModelFromComboBoxIndex(index);
                 if (modifiedModel != null) {
-                    ProducteDAO.deleteItem(modifiedModel.getId());
+                    RentalDAO.deleteItem(modifiedModel.getId());
                     loadData();
                 }
             }
         });
     }
 
-    private ProducteModel getModelFromComboBoxIndex(int index) {
+    private RentalModel getModelFromComboBoxIndex(int index) {
         if (index != -1) {
             String comboBoxText = view.itemComboBox.getItemAt(index);
             return getListModelFromName(comboBoxText);
@@ -199,8 +199,8 @@ public class RentalController {
         return null;
     }
 
-    private ProducteModel getListModelFromName(String searchName) {
-        for (ProducteModel model : listProducts) {
+    private RentalModel getListModelFromName(String searchName) {
+        for (RentalModel model : listProducts) {
             if (searchName.contains(model.getDataInici())) {
                 return model;
             }
@@ -221,7 +221,7 @@ public class RentalController {
 
         int selectedEntry = view.itemComboBox.getSelectedIndex();
         if (selectedEntry != -1 && status == STATUS_MODIFY) {
-            ProducteModel selectedItem = listProducts.get(selectedEntry);
+            RentalModel selectedItem = listProducts.get(selectedEntry);
             view.itemNameField.setText(selectedItem.getDataInici());
             view.itemDescriptionField.setText(selectedItem.getDataFinal());
 

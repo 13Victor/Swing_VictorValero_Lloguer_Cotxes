@@ -14,7 +14,7 @@ public class MainWindow extends JFrame {
     private CategoriaView categoriaView;
 
     private RentalController rentalController;
-    private ProducteView producteView;
+    private RentalView rentalView;
 
     private ClientsController clientsController;
     private ClientsView clientsView;
@@ -34,7 +34,7 @@ public class MainWindow extends JFrame {
         // Inicialitza els controladors amb els models i vistes carregats
         categoriaController = new CategoriaController(categoriaView, tabbedPane);
         categoriaController.start();
-        rentalController = new RentalController(producteView, tabbedPane);
+        rentalController = new RentalController(rentalView, tabbedPane);
         rentalController.start();
         clientsController = new ClientsController(clientsView, tabbedPane);
         clientsController.start();
@@ -52,13 +52,13 @@ public class MainWindow extends JFrame {
     
         // Inicialitza les vistes
         categoriaView = new CategoriaView();
-        producteView = new ProducteView();
+        rentalView = new RentalView();
         clientsView = new ClientsView();
         clientsVehiclesView = new ClientsVehiclesView();
     
         // Afegeix les vistes als espais del 'tabbedPane'
         tabbedPane.addTab("Vehicles", categoriaView);
-        tabbedPane.addTab("Lloguers", producteView);
+        tabbedPane.addTab("Lloguers", rentalView);
         tabbedPane.addTab("Clients", clientsView);
         tabbedPane.addTab("Observacions", clientsVehiclesView);
     
