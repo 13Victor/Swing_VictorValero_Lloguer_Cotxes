@@ -6,7 +6,6 @@ import java.awt.event.ItemEvent;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -121,7 +120,7 @@ public class CategoriaController {
         view.itemNameField.setEnabled(!isLoading);
         view.itemName2Field.setEnabled(!isLoading);
         view.itemYearField.setEnabled(!isLoading);
-        view.itemAvailabilityField.setEnabled(!isLoading);
+        view.itemAvailabilityCheckBox.setEnabled(!isLoading); // Cambiar el campo de texto por checkbox
         view.itemPhotoField.setEnabled(!isLoading);
         view.addButton.setEnabled(!isLoading && status == STATUS_ADD);
         view.modifyButton.setEnabled(!isLoading && status == STATUS_MODIFY);
@@ -157,7 +156,8 @@ public class CategoriaController {
         String marca = view.itemNameField.getText();
         String model = view.itemName2Field.getText();
         String any = view.itemYearField.getText();
-        String disponibilitat = view.itemAvailabilityField.getText();
+        // Obtener disponibilidad desde el checkbox
+        String disponibilitat = view.itemAvailabilityCheckBox.isSelected() ? "Disponible" : "No disponible";
         String foto = view.itemPhotoField.getText();
 
         CategoriaModel newModel = new CategoriaModel(marca, model, any, disponibilitat, foto);
@@ -172,12 +172,12 @@ public class CategoriaController {
                 // Actualitzar també el comboBox amb el nou nom 
                 // (perquè al carregar les dades quedi seleccionat)
                 int index = view.itemComboBox.getItemCount() - 1;
-                view.itemComboBox.insertItemAt(marca, index);
+                view.itemComboBox.insertItemAt(marca + " " + model, index);
                 view.itemComboBox.setSelectedIndex(index);
                 view.itemNameField.setText(marca);
                 view.itemName2Field.setText(model);
                 view.itemYearField.setText(any);
-                view.itemAvailabilityField.setText(disponibilitat);
+                view.itemAvailabilityCheckBox.setSelected("Disponible".equals(disponibilitat));
                 view.itemPhotoField.setText(foto);
         
                 // Actualitzar les dades normalment
@@ -192,7 +192,8 @@ public class CategoriaController {
         String marca = view.itemNameField.getText();
         String model = view.itemName2Field.getText();
         String any = view.itemYearField.getText();
-        String disponibilitat = view.itemAvailabilityField.getText();
+        // Obtener disponibilidad desde el checkbox
+        String disponibilitat = view.itemAvailabilityCheckBox.isSelected() ? "Disponible" : "No disponible";
         String foto = view.itemPhotoField.getText();
         int index = view.itemComboBox.getSelectedIndex();
 
@@ -200,9 +201,9 @@ public class CategoriaController {
         CategoriaModel modifiedModel = getModelFromComboBoxIndex(index);
         modifiedModel.setMarca(marca);
         modifiedModel.setModel(model);
-        modifiedModel.setAny(any);                    // Fix: was setting marca instead of any
-        modifiedModel.setDisponibilitat(disponibilitat); // Fix: was setting model instead of disponibilitat
-        modifiedModel.setFoto(foto);                    // Fix: was setting marca instead of foto
+        modifiedModel.setAny(any);
+        modifiedModel.setDisponibilitat(disponibilitat);
+        modifiedModel.setFoto(foto);
 
         // Gestionar dades del DAO en una tasca paral·lela
         UtilsSwingThread.run(
@@ -325,13 +326,14 @@ public class CategoriaController {
     }
 
     // Emplena els camps del formulari segons la sel·lecció de la comboBox
-    private void fillFormData () {
+    private void fillFormData() {
         int selectedEntry = view.itemComboBox.getSelectedIndex();
         if (selectedEntry != -1 && status == STATUS_MODIFY) {
             view.itemNameField.setText(list.get(selectedEntry).getMarca());
             view.itemName2Field.setText(list.get(selectedEntry).getModel());
             view.itemYearField.setText(list.get(selectedEntry).getAny());
-            view.itemAvailabilityField.setText(list.get(selectedEntry).getDisponibilitat());
+            // Configurar el checkbox según la disponibilidad
+            view.itemAvailabilityCheckBox.setSelected("Disponible".equals(list.get(selectedEntry).getDisponibilitat()));
             view.itemPhotoField.setText(list.get(selectedEntry).getFoto());
             String photoPath = list.get(selectedEntry).getFoto();
             view.itemPhotoField.setText(photoPath);
@@ -340,7 +342,7 @@ public class CategoriaController {
             view.itemNameField.setText("");
             view.itemName2Field.setText("");
             view.itemYearField.setText("");
-            view.itemAvailabilityField.setText("");
+            view.itemAvailabilityCheckBox.setSelected(true);
             view.itemPhotoField.setText("");
             view.imageLabel.setIcon(null);
             view.imageLabel.setText("No image");

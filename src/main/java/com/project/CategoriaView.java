@@ -14,7 +14,8 @@ public class CategoriaView extends JPanel {
     public JTextField itemNameField = new JTextField();
     public JTextField itemName2Field = new JTextField();
     public JTextField itemYearField = new JTextField();
-    public JTextField itemAvailabilityField = new JTextField();
+    // Cambio: Reemplazar campo de texto por checkbox
+    public JCheckBox itemAvailabilityCheckBox = new JCheckBox("Disponible");
     public JTextField itemPhotoField = new JTextField();
     public JButton addButton = new JButton("Afegir");
     public JButton modifyButton = new JButton("Modificar");
@@ -29,6 +30,8 @@ public class CategoriaView extends JPanel {
     }
 
     private void initComponents() {
+        // [Código existente hasta el punto donde se añadía el campo de disponibilidad]
+        
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         setBackground(UITheme.BACKGROUND_COLOR);
         
@@ -160,7 +163,27 @@ public class CategoriaView extends JPanel {
         formPanel.add(createLabeledField("Any:", itemYearField));
         formPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-        formPanel.add(createLabeledField("Disponibilitat:", itemAvailabilityField));
+        // CAMBIO: Reemplazar el campo de texto por un checkbox
+        JPanel availabilityPanel = new JPanel();
+        availabilityPanel.setLayout(new BoxLayout(availabilityPanel, BoxLayout.X_AXIS));
+        availabilityPanel.setBackground(UITheme.CARD_COLOR);
+        availabilityPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        availabilityPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, itemAvailabilityCheckBox.getPreferredSize().height));
+        
+        JLabel availabilityLabel = new JLabel("Disponibilitat:");
+        availabilityLabel.setFont(UITheme.LABEL_FONT);
+        availabilityLabel.setPreferredSize(new Dimension(100, availabilityLabel.getPreferredSize().height));
+        availabilityLabel.setLabelFor(itemAvailabilityCheckBox);
+        
+        itemAvailabilityCheckBox.setFont(UITheme.LABEL_FONT);
+        itemAvailabilityCheckBox.setBackground(UITheme.CARD_COLOR);
+        
+        availabilityPanel.add(availabilityLabel);
+        availabilityPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        availabilityPanel.add(itemAvailabilityCheckBox);
+        availabilityPanel.add(Box.createHorizontalGlue()); // Para que el checkbox no ocupe todo el ancho
+        
+        formPanel.add(availabilityPanel);
         formPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
         // Ajustar también el campo de foto
