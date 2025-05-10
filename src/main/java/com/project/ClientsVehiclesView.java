@@ -1,6 +1,7 @@
 package com.project;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 public class ClientsVehiclesView extends JPanel {
@@ -23,90 +24,183 @@ public class ClientsVehiclesView extends JPanel {
     }
 
     private void initComponents() {
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        setBackground(UIStyle.BACKGROUND_COLOR);
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        setBackground(UITheme.BACKGROUND_COLOR);
 
-        // Espai superior fins als botons
-        add(Box.createRigidArea(new Dimension(0, 10)));
-
-        // Afegir botons (refresca i vehicles de clients) en un panell horitzontal
-        JPanel horizPanel0 = new JPanel();
-        Dimension sizeHorizPanel0 = new Dimension(Integer.MAX_VALUE, reloadButton.getMinimumSize().height);
-        horizPanel0.setPreferredSize(sizeHorizPanel0);
-        horizPanel0.setLayout(new BoxLayout(horizPanel0, BoxLayout.X_AXIS));
-        horizPanel0.add(reloadButton);
-        horizPanel0.add(Box.createHorizontalGlue()); // Estira l'espai entre els botons
-        horizPanel0.add(loadingLabel);
-        loadingLabel.setVisible(false);
-        loadingLabel.setForeground(Color.RED);
-        add(horizPanel0);
-
-        // Linia separadora 0
-        JSeparator separator0 = new JSeparator(JSeparator.HORIZONTAL);
-        separator0.setMinimumSize(new Dimension(Integer.MAX_VALUE, 20));
-        separator0.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
-        add(separator0);
-
-        // Etiqueta de nou vehicle de client
-        newItemCheckBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(newItemCheckBox);
-
-        // Desplegable de vehicles de clients
-        itemComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-        itemComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, itemComboBox.getMinimumSize().height));
-        add(itemComboBox);
+        // Título de la sección
+        JLabel titleLabel = new JLabel("Gestió d'Observacions");
+        titleLabel.setFont(UITheme.TITLE_FONT);
+        titleLabel.setForeground(UITheme.PRIMARY_COLOR);
+        titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        add(titleLabel);
         
-        // Campo de observaciones
-        add(createLabeledField("Vehicle:", categoryComboBox));
-        add(createLabeledField("Client:", clientComboBox));
-        add(createLabeledField("Observació:", itemObservationsField));
+        add(Box.createRigidArea(new Dimension(0, 15)));
 
-        // Afegir espai vertical fins als bontons
+        // Panel de acciones con reloadButton y loadingLabel
+        JPanel actionPanel = new JPanel();
+        actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.X_AXIS));
+        actionPanel.setBackground(UITheme.BACKGROUND_COLOR);
+        actionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        actionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, reloadButton.getPreferredSize().height));
+        
+        // Aplicar estilo al botón
+        UITheme.styleButton(reloadButton, UITheme.PRIMARY_COLOR);
+        reloadButton.setMnemonic(KeyEvent.VK_R); // Alt+R para refrescar
+        reloadButton.setToolTipText("Actualitzar el llistat d'observacions (Alt+R)");
+        
+        actionPanel.add(reloadButton);
+        actionPanel.add(Box.createHorizontalGlue());
+        
+        loadingLabel.setForeground(UITheme.DANGER_COLOR);
+        loadingLabel.setFont(UITheme.LABEL_FONT);
+        loadingLabel.setVisible(false);
+        actionPanel.add(loadingLabel);
+        
+        add(actionPanel);
+        add(Box.createRigidArea(new Dimension(0, 15)));
+
+        // Separador estilizado
+        JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
+        separator.setForeground(UITheme.SECONDARY_COLOR);
+        separator.setAlignmentX(Component.LEFT_ALIGNMENT);
+        add(separator);
+        add(Box.createRigidArea(new Dimension(0, 15)));
+
+        // Panel de selección (nueva observación o modificar)
+        JPanel selectionPanel = new JPanel();
+        selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.Y_AXIS));
+        selectionPanel.setBackground(UITheme.BACKGROUND_COLOR);
+        selectionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        selectionPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 10, 0));
+        
+        newItemCheckBox.setFont(UITheme.LABEL_FONT);
+        newItemCheckBox.setBackground(UITheme.BACKGROUND_COLOR);
+        newItemCheckBox.setMnemonic(KeyEvent.VK_N); // Alt+N
+        newItemCheckBox.setToolTipText("Activar per afegir una nova observació (Alt+N)");
+        newItemCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        selectionPanel.add(newItemCheckBox);
+        add(selectionPanel);
+
+        // ComboBox para seleccionar observación
+        JPanel comboPanel = new JPanel();
+        comboPanel.setLayout(new BoxLayout(comboPanel, BoxLayout.X_AXIS));
+        comboPanel.setBackground(UITheme.BACKGROUND_COLOR);
+        comboPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        comboPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, itemComboBox.getPreferredSize().height + 10));
+        
+        JLabel comboLabel = new JLabel("Observació: ");
+        comboLabel.setFont(UITheme.LABEL_FONT);
+        comboLabel.setLabelFor(itemComboBox);
+        comboPanel.add(comboLabel);
+        comboPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        
+        UITheme.styleComboBox(itemComboBox);
+        itemComboBox.setToolTipText("Selecciona una observació per modificar");
+        itemComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, itemComboBox.getPreferredSize().height));
+        comboPanel.add(itemComboBox);
+        
+        add(comboPanel);
+        add(Box.createRigidArea(new Dimension(0, 15)));
+
+        // Panel de formulario principal
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+        formPanel.setBackground(UITheme.CARD_COLOR);
+        formPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+            BorderFactory.createEmptyBorder(15, 15, 15, 15)
+        ));
+        formPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        // Campos del formulario
+        formPanel.add(createLabeledField("Vehicle:", categoryComboBox));
+        formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        
+        formPanel.add(createLabeledField("Client:", clientComboBox));
+        formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        
+        // Campo de observación con área de texto más grande
+        JPanel obsPanel = new JPanel();
+        obsPanel.setLayout(new BoxLayout(obsPanel, BoxLayout.X_AXIS));
+        obsPanel.setBackground(UITheme.CARD_COLOR);
+        obsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        JLabel obsLabel = new JLabel("Observació:");
+        obsLabel.setFont(UITheme.LABEL_FONT);
+        obsLabel.setPreferredSize(new Dimension(100, obsLabel.getPreferredSize().height));
+        
+        // Usa JTextArea en lugar de JTextField para observaciones más largas
+        JTextArea obsArea = new JTextArea();
+        obsArea.setFont(UITheme.LABEL_FONT);
+        obsArea.setLineWrap(true);
+        obsArea.setWrapStyleWord(true);
+        obsArea.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        
+        JScrollPane scrollPane = new JScrollPane(obsArea);
+        scrollPane.setPreferredSize(new Dimension(300, 100));
+        scrollPane.setMinimumSize(new Dimension(300, 100));
+        
+        obsPanel.add(obsLabel);
+        obsPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        obsPanel.add(scrollPane);
+        
+        formPanel.add(obsPanel);
+        
+        add(formPanel);
         add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // Alinear botons (afegir, modificar i esborrar) en un panell horitzontal
-        JPanel horizPanel1 = new JPanel();
-        horizPanel1.setLayout(new BoxLayout(horizPanel1, BoxLayout.X_AXIS));
-        horizPanel1.add(addButton);
-        horizPanel1.add(Box.createRigidArea(new Dimension(10, 0)));
-        horizPanel1.add(modifyButton);
-        horizPanel1.add(Box.createRigidArea(new Dimension(10, 0)));
-        horizPanel1.add(deleteButton);
-        add(horizPanel1);
-
-        // Expandir verticalment (per pujar els elements la resta d'elements)
-        add(Box.createVerticalGlue());
-
-        // Apply styles
-        UIStyle.styleButton(reloadButton, UIStyle.PRIMARY_COLOR);
-        UIStyle.styleButton(addButton, UIStyle.PRIMARY_COLOR);
-        UIStyle.styleButton(modifyButton, UIStyle.PRIMARY_COLOR);
-        UIStyle.styleButton(deleteButton, UIStyle.DANGER_COLOR);
-
-        UIStyle.styleTextField(itemObservationsField);
+        // Panel de botones
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        buttonPanel.setBackground(UITheme.BACKGROUND_COLOR);
+        buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
-        UIStyle.styleComboBox(itemComboBox);
-        UIStyle.styleComboBox(categoryComboBox);
-        UIStyle.styleComboBox(clientComboBox);
-
-        // Style checkboxes and labels
-        newItemCheckBox.setFont(UIStyle.LABEL_FONT);
-        loadingLabel.setFont(UIStyle.LABEL_FONT);
-
-        // Set colors
-        loadingLabel.setForeground(Color.RED);
-        setBackground(UIStyle.BACKGROUND_COLOR);
+        UITheme.styleButton(addButton, UITheme.SUCCESS_COLOR);
+        addButton.setMnemonic(KeyEvent.VK_A); // Alt+A
+        addButton.setToolTipText("Afegir nova observació (Alt+A)");
+        
+        UITheme.styleButton(modifyButton, UITheme.PRIMARY_COLOR);
+        modifyButton.setMnemonic(KeyEvent.VK_M); // Alt+M
+        modifyButton.setToolTipText("Modificar observació seleccionada (Alt+M)");
+        
+        UITheme.styleButton(deleteButton, UITheme.DANGER_COLOR);
+        deleteButton.setMnemonic(KeyEvent.VK_E); // Alt+E
+        deleteButton.setToolTipText("Esborrar observació seleccionada (Alt+E)");
+        
+        buttonPanel.add(addButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        buttonPanel.add(modifyButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        buttonPanel.add(deleteButton);
+        
+        add(buttonPanel);
+        
+        // Espacio vertical expansible al final
+        add(Box.createVerticalGlue());
     }
 
-    // Crea una fila amb una etiqueta i un component interactiu SWING
+    // Método para crear un campo con etiqueta
     private JPanel createLabeledField(String labelText, JComponent component) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        JLabel label = new JLabel(labelText);
-        label.setPreferredSize(new Dimension(100, label.getPreferredSize().height));
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.setBackground(UITheme.CARD_COLOR);
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, component.getPreferredSize().height));
         
-        component.setMaximumSize(new Dimension(Integer.MAX_VALUE, component.getPreferredSize().height));
+        JLabel label = new JLabel(labelText);
+        label.setFont(UITheme.LABEL_FONT);
+        label.setPreferredSize(new Dimension(100, label.getPreferredSize().height));
+        label.setLabelFor(component);
+        
+        if (component instanceof JTextField) {
+            UITheme.styleTextField((JTextField) component);
+        } else if (component instanceof JComboBox) {
+            UITheme.styleComboBox((JComboBox<?>) component);
+        }
         
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(5, 0)));

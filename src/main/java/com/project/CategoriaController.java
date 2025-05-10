@@ -280,7 +280,7 @@ public class CategoriaController {
                 // Create a File object to check if the path is absolute or relative
                 File imageFile = new File(imagePath);
                 
-                // If the path is not absolute, prepend the project directory path
+                // Si la ruta no es absoluta, anteponer la ruta del directorio del proyecto
                 if (!imageFile.isAbsolute()) {
                     imageFile = new File(System.getProperty("user.dir"), imagePath);
                 }
@@ -288,8 +288,10 @@ public class CategoriaController {
                 if (imageFile.exists()) {
                     ImageIcon imageIcon = new ImageIcon(imageFile.getAbsolutePath());
                     Image image = imageIcon.getImage();
-                    Image scaledImage = image.getScaledInstance(200, 150, Image.SCALE_SMOOTH);
+                    // Ajustar tamaño para el nuevo layout
+                    Image scaledImage = image.getScaledInstance(180, 140, Image.SCALE_SMOOTH);
                     view.imageLabel.setIcon(new ImageIcon(scaledImage));
+                    view.imageLabel.setText("");
                 } else {
                     view.imageLabel.setIcon(null);
                     view.imageLabel.setText("Image not found: " + imagePath);
