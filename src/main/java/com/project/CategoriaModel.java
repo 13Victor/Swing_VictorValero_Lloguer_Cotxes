@@ -4,8 +4,8 @@ public class CategoriaModel {
     private int id;
     private String marca;
     private String model;
-    private String any; // Cambiado de int a String
-    private String disponibilitat;
+    private String any;
+    private String disponibilitat; // Lo mantenemos pero ahora se obtiene de la tabla disponibilitats
     private String foto;
 
     // Constructor

@@ -3,9 +3,9 @@ package com.project;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
-// Rename class to RentalController
 public class RentalController {
 
     private static final int STATUS_LOADING = 0;
@@ -14,7 +14,7 @@ public class RentalController {
     private int status = STATUS_ADD;
 
     private RentalView view;
-    private ArrayList<CategoriaModel> listCategories;
+    private ArrayList<CategoriaModel> listCategories; // Ahora esta lista solo contendrá vehículos disponibles
     private ArrayList<RentalModel> listProducts;
     private ArrayList<ClientsModel> listClients;
     private JTabbedPane tabbedPane;
@@ -52,7 +52,7 @@ public class RentalController {
             setStatus(STATUS_LOADING);
 
             // Actualizamos las listas
-            listCategories = CategoriaDAO.getAll();
+            listCategories = CategoriaDAO.getAvailableVehicles(); // Solo vehículos disponibles
             listProducts = RentalDAO.getAll();
             listClients = ClientsDAO.getAll();
 
@@ -97,6 +97,7 @@ public class RentalController {
 
             setStatus(oldStatus);
             fillFormData();
+     
         });
         // No poner más instrucciones después del UtilsSwingThread.run
     }
@@ -145,11 +146,25 @@ public class RentalController {
             String selectedClientName = (String) view.clientComboBox.getSelectedItem();
             int id_vehicle = getCategoryIDFromName(selectedCategoryName);
             int id_client = getClientIDFromName(selectedClientName);
-            RentalModel newModel = new RentalModel(data_inici, data_final, id_vehicle, id_client);
-
-            setStatus(STATUS_MODIFY);
-            RentalDAO.addItem(newModel);
-            loadData();
+            
+            // Verificar que el vehículo está disponible
+            if (DisponibilitatDAO.isVehicleAvailable(id_vehicle)) {
+                RentalModel newModel = new RentalModel(data_inici, data_final, id_vehicle, id_client);
+                RentalDAO.addItem(newModel);
+                
+                // Marcar el vehículo como no disponible mientras está alquilado
+                DisponibilitatDAO.updateVehicleAvailability(id_vehicle, "No disponible");
+                
+                setStatus(STATUS_MODIFY);
+                loadData();
+            } else {
+                // Mostrar mensaje si el vehículo no está disponible
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    JOptionPane.showMessageDialog(view, 
+                        "El vehículo seleccionado no está disponible para alquiler.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                });
+            }
         });
     }
 
@@ -210,8 +225,12 @@ public class RentalController {
 
     private void fillFormData() {
         view.categoryComboBox.removeAllItems();
+        
+        // Solo mostrar vehículos disponibles en el combobox
         for (CategoriaModel category : listCategories) {
-            view.categoryComboBox.addItem(category.getMarca() + " " + category.getModel());
+            if ("Disponible".equals(category.getDisponibilitat())) {
+                view.categoryComboBox.addItem(category.getMarca() + " " + category.getModel());
+            }
         }
 
         view.clientComboBox.removeAllItems();
@@ -225,11 +244,22 @@ public class RentalController {
             view.itemNameField.setText(selectedItem.getDataInici());
             view.itemDescriptionField.setText(selectedItem.getDataFinal());
 
-            int categoryIndex = getCategoryIndexById(selectedItem.getIdVehicle());
+            // Buscar el vehículo y el cliente en las respectivas listas
+            CategoriaModel vehicle = CategoriaDAO.getItem(selectedItem.getIdVehicle());
             int clientIndex = getClientIndexById(selectedItem.getIdClient());
 
-            view.categoryComboBox.setSelectedIndex(categoryIndex);
-            view.clientComboBox.setSelectedIndex(clientIndex);
+            // Seleccionar el vehículo solo si está disponible
+            for (int i = 0; i < view.categoryComboBox.getItemCount(); i++) {
+                String categoryName = view.categoryComboBox.getItemAt(i);
+                if (categoryName.equals(vehicle.getMarca() + " " + vehicle.getModel())) {
+                    view.categoryComboBox.setSelectedIndex(i);
+                    break;
+                }
+            }
+
+            if (clientIndex >= 0) {
+                view.clientComboBox.setSelectedIndex(clientIndex);
+            }
         } else {
             view.itemNameField.setText("");
             view.itemDescriptionField.setText("");

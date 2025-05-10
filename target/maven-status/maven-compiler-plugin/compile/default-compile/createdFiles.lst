@@ -8,6 +8,7 @@ com\project\Main.class
 com\project\ClientsModel.class
 com\project\Main$1.class
 com\project\ClientsDAO.class
+com\project\DisponibilitatDAO.class
 com\project\UITheme$2.class
 com\project\ClientsVehiclesModel.class
 com\project\VehicleCatalogView.class
