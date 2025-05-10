@@ -1,12 +1,15 @@
 package com.project;
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-
-import javax.swing.JTabbedPane;
-
-import com.project.CategoriaDAO;
+import javax.swing.*;
 
 public class CategoriaController {
 
@@ -18,6 +21,8 @@ public class CategoriaController {
     private CategoriaView view;
     private ArrayList<CategoriaModel> list;
     private JTabbedPane tabbedPane;
+    private String selectedImagePath = null;
+    private static final String IMAGE_DIRECTORY = "vehicle_images/";
 
     CategoriaController(CategoriaView view, JTabbedPane tabbedPane) {
         this.view = view;
@@ -40,6 +45,7 @@ public class CategoriaController {
         view.addButton.addActionListener(this::controllerAddButtonAction);
         view.modifyButton.addActionListener(this::controllerModifyButtonAction);
         view.deleteButton.addActionListener(this::controllerDeleteButtonAction);
+        view.selectImageButton.addActionListener(this::controllerSelectImageButtonAction);
     }
 
     public void loadData() {
@@ -233,6 +239,72 @@ public class CategoriaController {
         // No posar més instruccions després del UtilsSwingThread.run
     }
 
+    private void controllerSelectImageButtonAction(ActionEvent e) {
+        int result = view.fileChooser.showOpenDialog(view);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = view.fileChooser.getSelectedFile();
+            try {
+                // Ensure image directory exists relative to project root
+                File projectDir = new File(System.getProperty("user.dir"));
+                File imageDir = new File(projectDir, IMAGE_DIRECTORY);
+                if (!imageDir.exists()) {
+                    imageDir.mkdirs();
+                }
+
+                // Create relative path for storing in database
+                String uniqueFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
+                String relativePath = IMAGE_DIRECTORY + uniqueFileName;
+                
+                // Copy image to our directory
+                Path destination = new File(projectDir, relativePath).toPath();
+                Files.copy(selectedFile.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
+
+                // Save the relative path and update the field
+                selectedImagePath = relativePath;
+                view.itemPhotoField.setText(relativePath);
+
+                // Display the image
+                displayImage(relativePath);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(view, 
+                    "Error al carregar la imatge: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void displayImage(String imagePath) {
+        if (imagePath != null && !imagePath.isEmpty()) {
+            try {
+                // Create a File object to check if the path is absolute or relative
+                File imageFile = new File(imagePath);
+                
+                // If the path is not absolute, prepend the project directory path
+                if (!imageFile.isAbsolute()) {
+                    imageFile = new File(System.getProperty("user.dir"), imagePath);
+                }
+
+                if (imageFile.exists()) {
+                    ImageIcon imageIcon = new ImageIcon(imageFile.getAbsolutePath());
+                    Image image = imageIcon.getImage();
+                    Image scaledImage = image.getScaledInstance(200, 150, Image.SCALE_SMOOTH);
+                    view.imageLabel.setIcon(new ImageIcon(scaledImage));
+                } else {
+                    view.imageLabel.setIcon(null);
+                    view.imageLabel.setText("Image not found: " + imagePath);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                view.imageLabel.setIcon(null);
+                view.imageLabel.setText("Error loading image");
+            }
+        } else {
+            view.imageLabel.setIcon(null);
+            view.imageLabel.setText("No image");
+        }
+    }
+
     private CategoriaModel getModelFromComboBoxIndex(int index) {
         String comboBoxText = view.itemComboBox.getItemAt(index);
         return getListModelFromName(comboBoxText);
@@ -259,12 +331,17 @@ public class CategoriaController {
             view.itemYearField.setText(list.get(selectedEntry).getAny());
             view.itemAvailabilityField.setText(list.get(selectedEntry).getDisponibilitat());
             view.itemPhotoField.setText(list.get(selectedEntry).getFoto());
+            String photoPath = list.get(selectedEntry).getFoto();
+            view.itemPhotoField.setText(photoPath);
+            displayImage(photoPath);
         } else {
             view.itemNameField.setText("");
             view.itemName2Field.setText("");
             view.itemYearField.setText("");
             view.itemAvailabilityField.setText("");
             view.itemPhotoField.setText("");
+            view.imageLabel.setIcon(null);
+            view.imageLabel.setText("No image");
         }
     }
 }

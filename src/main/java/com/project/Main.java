@@ -79,16 +79,16 @@ public static void initData() {
                       "FOREIGN KEY (id_client) REFERENCES clients(id))");
 
     // Inserir dades a la taula 'vehicles'
-    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Toyota', 'Corolla', '2022-01-01', 'Disponible', '(foto1)')");
-    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Honda', 'Civic', '2022-01-02', 'Disponible', '(foto2)')");
-    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Ford', 'Mustang', '2022-01-03', 'Disponible', '(foto3)')");
-    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Chevrolet', 'Camaro', '2022-01-04', 'Disponible', '(foto4)')");
-    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Nissan', 'Altima', '2022-01-05', 'Disponible', '(foto5)')");
-    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Audi', 'A4', '2022-01-06', 'Disponible', '(foto6)')");
-    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('BMW', '3 Series', '2022-01-07', 'Disponible', '(foto7)')");
-    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Mercedes', 'C-Class', '2022-01-08', 'Disponible', '(foto8)')");
-    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Volkswagen', 'Golf', '2022-01-09', 'Disponible', '(foto9)')");
-    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Tesla', 'Model 3', '2022-01-10', 'Disponible', '(foto10)')");
+    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Toyota', 'Corolla', '2022-01-01', 'Disponible', 'vehicle_images/ToyotaCorolla.jpg')");
+    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Honda', 'Civic', '2022-01-02', 'Disponible', 'vehicle_images/HondaCivic.jpg')");
+    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Ford', 'Mustang', '2022-01-03', 'Disponible', 'vehicle_images/FordMustang.jpg')");
+    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Chevrolet', 'Camaro', '2022-01-04', 'Disponible', 'vehicle_images/ChevroletCamaro.jpg')");
+    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Nissan', 'Altima', '2022-01-05', 'Disponible', 'vehicle_images/NissanAltima.jpg')");
+    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Audi', 'A4', '2022-01-06', 'Disponible', 'vehicle_images/AudiA4.jpg')");
+    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('BMW', '3 Series', '2022-01-07', 'Disponible', 'vehicle_images/BMW3Series.jpg')");
+    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Mercedes', 'C-Class', '2022-01-08', 'Disponible', 'vehicle_images/MercedesCClass.jpg')");
+    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Volkswagen', 'Golf', '2022-01-09', 'Disponible', 'vehicle_images/VolkswagenGolf.jpg')");
+    db.update("INSERT INTO vehicles (marca, model, any, disponibilitat, foto) VALUES ('Tesla', 'Model 3', '2022-01-10', 'Disponible', 'vehicle_images/TeslaModel3.jpg')");
 
     // Inserir dades a la taula 'clients'
     db.update("INSERT INTO clients (nom, adreca, telefon) VALUES ('Maria Lopez', 'C/Sant Pau nº12 1ºB', 612345678)");

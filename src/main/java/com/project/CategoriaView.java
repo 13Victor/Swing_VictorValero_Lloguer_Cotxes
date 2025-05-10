@@ -17,6 +17,9 @@ public class CategoriaView extends JPanel {
     public JButton addButton = new JButton("Afegir");
     public JButton modifyButton = new JButton("Modificar");
     public JButton deleteButton = new JButton("Esborrar");
+    public JLabel imageLabel = new JLabel();
+    public JButton selectImageButton = new JButton("Seleccionar Imatge");
+    public JFileChooser fileChooser = new JFileChooser();
 
     public CategoriaView() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -64,6 +67,30 @@ public class CategoriaView extends JPanel {
         add(createLabeledField("Disponibilitat:", itemAvailabilityField)); // Campo para la disponibilidad del vehículo
         add(createLabeledField("Foto:", itemPhotoField)); // Campo para la foto del vehículo
 
+        // Add image selection components
+        JPanel imagePanel = new JPanel();
+        imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
+        imagePanel.setBorder(BorderFactory.createTitledBorder("Imatge del Vehicle"));
+        
+        // Configure image label
+        imageLabel.setPreferredSize(new Dimension(200, 150));
+        imageLabel.setMinimumSize(new Dimension(200, 150));
+        imageLabel.setMaximumSize(new Dimension(200, 150));
+        imageLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        // Configure file chooser
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+            "Image files", "jpg", "jpeg", "png", "gif"));
+
+        imagePanel.add(imageLabel);
+        imagePanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        imagePanel.add(selectImageButton);
+        
+        add(imagePanel);
+        add(Box.createRigidArea(new Dimension(0, 10)));
+
         // Afegir espai vertical fins als bontons
         add(Box.createRigidArea(new Dimension(0, 20)));
 
@@ -85,6 +112,7 @@ public class CategoriaView extends JPanel {
         UIStyle.styleButton(addButton, UIStyle.PRIMARY_COLOR);
         UIStyle.styleButton(modifyButton, UIStyle.PRIMARY_COLOR);
         UIStyle.styleButton(deleteButton, UIStyle.DANGER_COLOR);
+        UIStyle.styleButton(selectImageButton, UIStyle.PRIMARY_COLOR);
 
         UIStyle.styleTextField(itemNameField);
         UIStyle.styleTextField(itemName2Field);
