@@ -11,11 +11,8 @@ class AppData {
     private Connection conn;
 
     private AppData() {
-        // Connecta al crear la primera instància
         connect();
     }
-
-    // Singleton
     public static AppData getInstance() {
         if (instance == null) {
             instance = new AppData();
@@ -59,11 +56,8 @@ class AppData {
     public int insertAndGetId(String sql) {
         int generatedId = -1;
         try (Statement stmt = conn.createStatement()) {
-            // Execute the update
             stmt.executeUpdate(sql);
             conn.commit();  // Make sure to commit the transaction if auto-commit is disabled
-    
-            // Query the last inserted row ID
             try (ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid()")) {
                 if (rs.next()) {
                     generatedId = rs.getInt(1); // Retrieve the last inserted ID
@@ -80,13 +74,8 @@ class AppData {
         }
         return generatedId;
     }
-    
-    // Aquesta funció transforma el ResultSet en un Map<String, Object>
-    // per fer l'accés a la informació més genèric
     public List<Map<String, Object>> query(String sql) {
         List<Map<String, Object>> resultList = new ArrayList<>();
-
-        // try-with-resources tancarà el ResultSet quan acabi el bloc
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             ResultSetMetaData metaData = rs.getMetaData();

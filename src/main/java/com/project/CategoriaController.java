@@ -28,13 +28,9 @@ public class CategoriaController {
         this.list = new ArrayList<>();
         this.tabbedPane = tabbedPane;
     }
-
-    // Accions per iniciar el controlador
     public void start() {
         setupActionListeners();
         loadData();
-        // No poseu més instruccions aquí,
-        // perquè hem obert un fil en paral·lel a 'loadData'
     }
 
     private void setupActionListeners() {
@@ -50,27 +46,14 @@ public class CategoriaController {
     public void loadData() {
 
         int oldStatus = status;
-
-        // Desactiva tots els elements i mostra el 'Carregant ...'
         setStatus(STATUS_LOADING);
-
-        // Gestionar dades del DAO en una tasca paral·lela
         UtilsSwingThread.run(
             () -> {
-                // Actualitzem la llista de categories a mostrar.
                 list = CategoriaDAO.getAll();
-
-                // Simula espera
                 Thread.sleep(1500);
-
-                // Definir el model escollit
                 if (!list.isEmpty()) {
-
-                    // Mirar si hi ha alguna categoria escollida al 'comboBox'
                     int oldSelected = view.itemComboBox.getSelectedIndex();
                     int newSelected = 0;
-
-                    // Si hi havia un model escollit, cal mirar quina posició té ara a la llista
                     if (oldSelected != -1) {
                         String selectedName = view.itemComboBox.getItemAt(oldSelected);
                         CategoriaModel tmp = getListModelFromName(selectedName);
@@ -78,28 +61,17 @@ public class CategoriaController {
                             newSelected = list.indexOf(tmp);
                         }
                     }
-                    
-                    // Elimina tots els elements existents al JComboBox
                     view.itemComboBox.removeAllItems();
-
-                    // Afegeix les noves categories rebudes al 'comboBox'
                     for (CategoriaModel itemModel : list) {
                         view.itemComboBox.addItem(itemModel.getMarca() + " " + itemModel.getModel());
                     }
-
-                    // Selecciona el model escollit al 'comboBox'
                     view.itemComboBox.setSelectedIndex(newSelected);
                 }
-
-                // Activa els elements i amaga 'Carregant ...'
                 setStatus(oldStatus);
                 fillFormData();
             }
         );
-        // No posar més instruccions després del UtilsSwingThread.run
     }
-
-    // Mostra o amaga els elements segons l'estat
     private void setStatus(int newStatus) {
         Boolean isLoading = false;
 
@@ -126,51 +98,33 @@ public class CategoriaController {
         view.modifyButton.setEnabled(!isLoading && status == STATUS_MODIFY);
         view.deleteButton.setEnabled(!isLoading && status == STATUS_MODIFY);
     }
-
-    // Estableix l'acció del botó 'reload'
     private void controllerReloadButtonAction(ActionEvent e) {
         loadData();
-        // 'loadData' crida a 'UtilsSwingThread.run'
-        // No posar més instruccions després del UtilsSwingThread.run
     }
-
-    // Quan s'apreta el 'checkBox' es posa en mode 'afegir' o 'modificar/esborrar'
     private void controllerNewItemCheckBoxAction(ItemEvent evt) {
         boolean isNew = evt.getStateChange() == ItemEvent.SELECTED;
         setStatus(isNew ? STATUS_ADD : STATUS_MODIFY);
-        
-        // Force proper state
         view.newItemCheckBox.setSelected(isNew);
         view.itemComboBox.setEnabled(!isNew);
         
         fillFormData();
     }
-
-    // Quan es canvia el valor del 'comboBox', es mostra el text sel·leccional al camp 'Nom'
     private void controllerItemComboBoxAction (ItemEvent e) {
         fillFormData();
     }
-
-    // Estableix l'acció del botó 'afegir'
     private void controllerAddButtonAction(ActionEvent e) {
         String marca = view.itemNameField.getText();
         String model = view.itemName2Field.getText();
         String any = view.itemYearField.getText();
-        // Obtener disponibilidad desde el checkbox
         String disponibilitat = view.itemAvailabilityCheckBox.isSelected() ? "Disponible" : "No disponible";
         String foto = view.itemPhotoField.getText();
 
         CategoriaModel newModel = new CategoriaModel(marca, model, any, disponibilitat, foto);
 
         setStatus(STATUS_MODIFY);
-
-        // Gestionar dades del DAO en una tasca paral·lela
         UtilsSwingThread.run(
             () -> {
                 CategoriaDAO.addItem(newModel);
-
-                // Actualitzar també el comboBox amb el nou nom 
-                // (perquè al carregar les dades quedi seleccionat)
                 int index = view.itemComboBox.getItemCount() - 1;
                 view.itemComboBox.insertItemAt(marca + " " + model, index);
                 view.itemComboBox.setSelectedIndex(index);
@@ -179,65 +133,42 @@ public class CategoriaController {
                 view.itemYearField.setText(any);
                 view.itemAvailabilityCheckBox.setSelected("Disponible".equals(disponibilitat));
                 view.itemPhotoField.setText(foto);
-        
-                // Actualitzar les dades normalment
                 loadData();
             }
         );
-        // No posar més instruccions després del UtilsSwingThread.run
     }
-
-    // Estableix l'acció del botó 'modificar'
     private void controllerModifyButtonAction(ActionEvent e) {
         String marca = view.itemNameField.getText();
         String model = view.itemName2Field.getText();
         String any = view.itemYearField.getText();
-        // Obtener disponibilidad desde el checkbox
         String disponibilitat = view.itemAvailabilityCheckBox.isSelected() ? "Disponible" : "No disponible";
         String foto = view.itemPhotoField.getText();
         int index = view.itemComboBox.getSelectedIndex();
-
-        // Crear una categoria amb les dades modificades
         CategoriaModel modifiedModel = getModelFromComboBoxIndex(index);
         modifiedModel.setMarca(marca);
         modifiedModel.setModel(model);
         modifiedModel.setAny(any);
         modifiedModel.setDisponibilitat(disponibilitat);
         modifiedModel.setFoto(foto);
-
-        // Gestionar dades del DAO en una tasca paral·lela
         UtilsSwingThread.run(
             () -> {
                 CategoriaDAO.updateItem(modifiedModel);
-
-                // Actualitzar també el comboBox amb el nou nom 
-                // (perquè al carregar les dades quedi seleccionat)
                 view.itemComboBox.removeItemAt(index);
                 view.itemComboBox.insertItemAt(marca + " " + model, index);
                 view.itemComboBox.setSelectedIndex(index);
-        
-                // Actualitzar les dades normalment
                 loadData();
             }
         );
-        // No posar més instruccions després del UtilsSwingThread.run
     }
-
-    // Estableix l'acció del botó 'borrar'
     private void controllerDeleteButtonAction(ActionEvent e) {
         int index = view.itemComboBox.getSelectedIndex();
         CategoriaModel modifiedModel = getModelFromComboBoxIndex(index);
-
-        // Gestionar dades del DAO en una tasca paral·lela
         UtilsSwingThread.run(
             () -> {
                 CategoriaDAO.deleteItem(modifiedModel.getId());
-
-                // Actualitzar les dades normalment
                 loadData();
             }
         );
-        // No posar més instruccions després del UtilsSwingThread.run
     }
 
     private void controllerSelectImageButtonAction(ActionEvent e) {
@@ -245,26 +176,17 @@ public class CategoriaController {
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = view.fileChooser.getSelectedFile();
             try {
-                // Ensure image directory exists relative to project root
                 File projectDir = new File(System.getProperty("user.dir"));
                 File imageDir = new File(projectDir, IMAGE_DIRECTORY);
                 if (!imageDir.exists()) {
                     imageDir.mkdirs();
                 }
-
-                // Create relative path for storing in database
                 String uniqueFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
                 String relativePath = IMAGE_DIRECTORY + uniqueFileName;
-                
-                // Copy image to our directory
                 Path destination = new File(projectDir, relativePath).toPath();
                 Files.copy(selectedFile.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
-
-                // Save the relative path and update the field
                 selectedImagePath = relativePath;
                 view.itemPhotoField.setText(relativePath);
-
-                // Display the image
                 displayImage(relativePath);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -278,10 +200,7 @@ public class CategoriaController {
     private void displayImage(String imagePath) {
         if (imagePath != null && !imagePath.isEmpty()) {
             try {
-                // Create a File object to check if the path is absolute or relative
                 File imageFile = new File(imagePath);
-                
-                // Si la ruta no es absoluta, anteponer la ruta del directorio del proyecto
                 if (!imageFile.isAbsolute()) {
                     imageFile = new File(System.getProperty("user.dir"), imagePath);
                 }
@@ -289,7 +208,6 @@ public class CategoriaController {
                 if (imageFile.exists()) {
                     ImageIcon imageIcon = new ImageIcon(imageFile.getAbsolutePath());
                     Image image = imageIcon.getImage();
-                    // Ajustar tamaño para el nuevo layout
                     Image scaledImage = image.getScaledInstance(180, 140, Image.SCALE_SMOOTH);
                     view.imageLabel.setIcon(new ImageIcon(scaledImage));
                     view.imageLabel.setText("");
@@ -324,15 +242,12 @@ public class CategoriaController {
         }
         return rst;
     }
-
-    // Emplena els camps del formulari segons la sel·lecció de la comboBox
     private void fillFormData() {
         int selectedEntry = view.itemComboBox.getSelectedIndex();
         if (selectedEntry != -1 && status == STATUS_MODIFY) {
             view.itemNameField.setText(list.get(selectedEntry).getMarca());
             view.itemName2Field.setText(list.get(selectedEntry).getModel());
             view.itemYearField.setText(list.get(selectedEntry).getAny());
-            // Configurar el checkbox según la disponibilidad
             view.itemAvailabilityCheckBox.setSelected("Disponible".equals(list.get(selectedEntry).getDisponibilitat()));
             view.itemPhotoField.setText(list.get(selectedEntry).getFoto());
             String photoPath = list.get(selectedEntry).getFoto();

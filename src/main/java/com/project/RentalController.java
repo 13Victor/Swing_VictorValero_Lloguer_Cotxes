@@ -24,14 +24,10 @@ public class RentalController {
         this.listProducts = new ArrayList<>();
         this.tabbedPane = tabbedPane;
     }
-
-    // Acciones para iniciar el controlador
     public void start() {
         setupActionListeners();
         setStatus(STATUS_ADD); // Forzar estado inicial a ADD
         loadData();
-        // No pongas más instrucciones aquí,
-        // porque hemos abierto un hilo en paralelo en 'loadData'
     }
 
     private void setupActionListeners() {
@@ -44,22 +40,13 @@ public class RentalController {
     }
 
     public void loadData() {
-        // Gestionar datos del DAO en una tarea paralela
         UtilsSwingThread.run(() -> {
             int oldStatus = status;
-
-            // Desactiva todos los elementos y muestra el 'Cargando ...'
             setStatus(STATUS_LOADING);
-
-            // Actualizamos las listas
             listCategories = CategoriaDAO.getAvailableVehicles(); // Solo vehículos disponibles
             listProducts = RentalDAO.getAll();
             listClients = ClientsDAO.getAll();
-
-            // Simula espera
             Thread.sleep(1500);
-
-            // Define el modelo elegido
             if (!listProducts.isEmpty()) {
                 int oldSelected = view.itemComboBox.getSelectedIndex();
                 int newSelected = 0;
@@ -75,14 +62,11 @@ public class RentalController {
                 view.itemComboBox.removeAllItems();
 
                 for (RentalModel itemModel : listProducts) {
-                    // Get vehicle and client info for better display
                     CategoriaModel vehicle = CategoriaDAO.getItem(itemModel.getIdVehicle());
                     ClientsModel client = ClientsDAO.getItem(itemModel.getIdClient());
                     
                     String vehicleInfo = vehicle != null ? vehicle.getMarca() + " " + vehicle.getModel() : "Unknown";
                     String clientInfo = client != null ? client.getNom() : "Unknown";
-                    
-                    // Format the display string with vehicle, client and dates
                     String displayText = String.format("%s | %s | %s / %s",
                         vehicleInfo,
                         clientInfo,
@@ -99,7 +83,6 @@ public class RentalController {
             fillFormData();
      
         });
-        // No poner más instrucciones después del UtilsSwingThread.run
     }
 
     private void setStatus(int newStatus) {
@@ -121,13 +104,9 @@ public class RentalController {
     private void controllerReloadButtonAction(ActionEvent e) {
         loadData();
     }
-
-    // Fix checkbox state management
     private void controllerNewItemCheckBoxAction(ItemEvent evt) {
         boolean isNew = evt.getStateChange() == ItemEvent.SELECTED;
         setStatus(isNew ? STATUS_ADD : STATUS_MODIFY);
-        
-        // Force proper state
         view.newItemCheckBox.setSelected(isNew);
         view.itemComboBox.setEnabled(!isNew);
         
@@ -146,19 +125,14 @@ public class RentalController {
             String selectedClientName = (String) view.clientComboBox.getSelectedItem();
             int id_vehicle = getCategoryIDFromName(selectedCategoryName);
             int id_client = getClientIDFromName(selectedClientName);
-            
-            // Verificar que el vehículo está disponible
             if (DisponibilitatDAO.isVehicleAvailable(id_vehicle)) {
                 RentalModel newModel = new RentalModel(data_inici, data_final, id_vehicle, id_client);
                 RentalDAO.addItem(newModel);
-                
-                // Marcar el vehículo como no disponible mientras está alquilado
                 DisponibilitatDAO.updateVehicleAvailability(id_vehicle, "No disponible");
                 
                 setStatus(STATUS_MODIFY);
                 loadData();
             } else {
-                // Mostrar mensaje si el vehículo no está disponible
                 javax.swing.SwingUtilities.invokeLater(() -> {
                     JOptionPane.showMessageDialog(view, 
                         "El vehículo seleccionado no está disponible para alquiler.",
@@ -225,8 +199,6 @@ public class RentalController {
 
     private void fillFormData() {
         view.categoryComboBox.removeAllItems();
-        
-        // Solo mostrar vehículos disponibles en el combobox
         for (CategoriaModel category : listCategories) {
             if ("Disponible".equals(category.getDisponibilitat())) {
                 view.categoryComboBox.addItem(category.getMarca() + " " + category.getModel());
@@ -243,12 +215,8 @@ public class RentalController {
             RentalModel selectedItem = listProducts.get(selectedEntry);
             view.itemNameField.setText(selectedItem.getDataInici());
             view.itemDescriptionField.setText(selectedItem.getDataFinal());
-
-            // Buscar el vehículo y el cliente en las respectivas listas
             CategoriaModel vehicle = CategoriaDAO.getItem(selectedItem.getIdVehicle());
             int clientIndex = getClientIndexById(selectedItem.getIdClient());
-
-            // Seleccionar el vehículo solo si está disponible
             for (int i = 0; i < view.categoryComboBox.getItemCount(); i++) {
                 String categoryName = view.categoryComboBox.getItemAt(i);
                 if (categoryName.equals(vehicle.getMarca() + " " + vehicle.getModel())) {

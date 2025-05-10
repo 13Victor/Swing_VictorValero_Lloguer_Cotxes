@@ -18,16 +18,12 @@ public class VehicleCatalogView extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(UITheme.BACKGROUND_COLOR);
-        
-        // Panel de búsqueda y filtros - Sin iconos decorativos
         JPanel searchPanel = new JPanel(new BorderLayout(10, 0));
         searchPanel.setBackground(UITheme.BACKGROUND_COLOR);
         searchPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
         
         JPanel searchFieldPanel = new JPanel(new BorderLayout(5, 0));
         searchFieldPanel.setBackground(UITheme.BACKGROUND_COLOR);
-        
-        // Eliminado el icono de lupa, mantenemos solo el campo de búsqueda
         searchField = new JTextField();
         UITheme.styleTextField(searchField);
         searchField.setToolTipText("Cercar per marca o model");
@@ -37,8 +33,6 @@ public class VehicleCatalogView extends JPanel {
         searchButton.addActionListener(e -> filterVehicles());
         
         searchField.addActionListener(e -> filterVehicles()); // Al presionar Enter
-        
-        // Simplificado: solo el campo de búsqueda sin iconos
         searchFieldPanel.add(searchField, BorderLayout.CENTER);
         
         JPanel filterPanel = new JPanel(new BorderLayout(5, 0));
@@ -66,8 +60,6 @@ public class VehicleCatalogView extends JPanel {
         searchPanel.add(searchFieldPanel, BorderLayout.CENTER);
         searchPanel.add(filterPanel, BorderLayout.EAST);
         searchPanel.add(buttonsPanel, BorderLayout.SOUTH);
-        
-        // Panel de catálogo con GridLayout flexible
         catalogPanel = new JPanel();
         catalogPanel.setLayout(new GridLayout(0, 4, 10, 10)); // 4 columnas, filas automáticas
         catalogPanel.setBackground(UITheme.BACKGROUND_COLOR);
@@ -76,8 +68,6 @@ public class VehicleCatalogView extends JPanel {
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         scrollPane.setBackground(UITheme.BACKGROUND_COLOR);
-        
-        // Panel de información
         JPanel infoPanel = new JPanel(new BorderLayout());
         infoPanel.setBackground(UITheme.BACKGROUND_COLOR);
         infoPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
@@ -92,13 +82,9 @@ public class VehicleCatalogView extends JPanel {
         
         infoPanel.add(infoLabel, BorderLayout.WEST);
         infoPanel.add(countLabel, BorderLayout.EAST);
-        
-        // Añadir componentes al panel principal
         add(searchPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(infoPanel, BorderLayout.SOUTH);
-        
-        // Cargar vehículos al iniciar
         loadVehicles();
     }
     
@@ -162,7 +148,6 @@ public class VehicleCatalogView extends JPanel {
     }
     
     private JPanel createVehicleCard(CategoriaModel vehicle) {
-        // Nuevo diseño de tarjeta con imágenes pero sin iconos decorativos
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBackground(UITheme.CARD_COLOR);
@@ -170,33 +155,25 @@ public class VehicleCatalogView extends JPanel {
             BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
             BorderFactory.createEmptyBorder(8, 8, 8, 8)
         ));
-        
-        // Imagen del vehículo - Incluida pero sin iconos decorativos
         JLabel imageLabel = new JLabel();
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         imageLabel.setPreferredSize(new Dimension(180, 120));
         imageLabel.setMaximumSize(new Dimension(180, 120));
         imageLabel.setMinimumSize(new Dimension(180, 120));
-        
-        // Cargar la imagen del vehículo correctamente
         String photoPath = vehicle.getFoto();
         if (photoPath != null && !photoPath.isEmpty()) {
             try {
-                // Verificar si la ruta es absoluta
                 File imageFile = new File(photoPath);
                 if (!imageFile.isAbsolute()) {
-                    // Si no es absoluta, construir la ruta completa
                     imageFile = new File(System.getProperty("user.dir"), photoPath);
                 }
                 
                 if (imageFile.exists()) {
-                    // La imagen existe, cargarla
                     ImageIcon imageIcon = new ImageIcon(imageFile.getAbsolutePath());
                     Image image = imageIcon.getImage();
                     Image scaledImage = image.getScaledInstance(180, 120, Image.SCALE_SMOOTH);
                     imageLabel.setIcon(new ImageIcon(scaledImage));
                 } else {
-                    // Si el archivo no existe, mostrar mensaje de error
                     System.err.println("Archivo no encontrado: " + imageFile.getAbsolutePath());
                     imageLabel.setText("Imatge no trobada");
                     imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -207,17 +184,12 @@ public class VehicleCatalogView extends JPanel {
                 imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
             }
         } else {
-            // Si no hay ruta de foto
             imageLabel.setText("Sense imatge");
             imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         }
-        
-        // Si no se ha cargado ninguna imagen, añadir un borde
         if (imageLabel.getIcon() == null) {
             imageLabel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         }
-        
-        // Información básica del vehículo
         JLabel nameLabel = new JLabel(vehicle.getMarca() + " " + vehicle.getModel());
         nameLabel.setFont(new Font("Segoe UI", Font.BOLD, 13));
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -225,8 +197,6 @@ public class VehicleCatalogView extends JPanel {
         JLabel yearLabel = new JLabel("Any: " + vehicle.getAny());
         yearLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         yearLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        // Estado de disponibilidad con color para distinguir rápidamente
         JLabel availabilityLabel = new JLabel(vehicle.getDisponibilitat());
         availabilityLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
         availabilityLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -236,8 +206,6 @@ public class VehicleCatalogView extends JPanel {
         } else {
             availabilityLabel.setForeground(UITheme.DANGER_COLOR);
         }
-        
-        // Añadir componentes al panel
         card.add(imageLabel);
         card.add(Box.createRigidArea(new Dimension(0, 5)));
         card.add(nameLabel);

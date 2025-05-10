@@ -29,7 +29,6 @@ public class CategoriaDAO {
     }
 
     public static void addItem(CategoriaModel category) {
-        // Primero insertar en vehicles
         String sql = "INSERT INTO vehicles (marca, model, any, foto) VALUES ('" + 
                      category.getMarca() + "', '" + 
                      category.getModel() + "', '" + 
@@ -37,19 +36,14 @@ public class CategoriaDAO {
                      category.getFoto() + "')";
         AppData db = AppData.getInstance();
         db.update(sql);
-        
-        // Obtener el último ID insertado
         List<Map<String, Object>> results = db.query("SELECT last_insert_rowid() as id");
         int vehicleId = (Integer) results.get(0).get("id");
-        
-        // Luego insertar en disponibilitats
         sql = "INSERT INTO disponibilitats (vehicle_id, estat) VALUES (" + 
               vehicleId + ", '" + category.getDisponibilitat() + "')";
         db.update(sql);
     }
 
     public static void updateItem(CategoriaModel category) {
-        // Actualizar vehicles
         String sql = "UPDATE vehicles SET " +
                      "marca = '" + category.getMarca() + "', " +
                      "model = '" + category.getModel() + "', " + 
@@ -58,24 +52,18 @@ public class CategoriaDAO {
                      "WHERE id = " + category.getId();
         AppData db = AppData.getInstance();
         db.update(sql);
-        
-        // Actualizar disponibilitat
         DisponibilitatDAO.updateVehicleAvailability(category.getId(), category.getDisponibilitat());
     }
 
     public static void deleteItem(int id) {
-        // Primero borramos las referencias en disponibilitats
         String sql = "DELETE FROM disponibilitats WHERE vehicle_id = " + id;
         AppData db = AppData.getInstance();
         db.update(sql);
-        
-        // Luego borramos el vehículo
         sql = "DELETE FROM vehicles WHERE id = " + id;
         db.update(sql);
     }
 
     public static ArrayList<CategoriaModel> getAll() {
-        // Retorna una llista amb totes les vehicles
         String sql = "SELECT v.id, v.marca, v.model, v.any, d.estat AS disponibilitat, v.foto " +
                      "FROM vehicles v " +
                      "LEFT JOIN disponibilitats d ON v.id = d.vehicle_id";
@@ -94,8 +82,6 @@ public class CategoriaDAO {
         }
         return list;
     }
-    
-    // Nuevo método: Retorna solo los vehículos disponibles
     public static ArrayList<CategoriaModel> getAvailableVehicles() {
         ArrayList<CategoriaModel> allVehicles = getAll();
         ArrayList<CategoriaModel> availableVehicles = new ArrayList<>();

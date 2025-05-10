@@ -7,8 +7,6 @@ public class CategoriaModel {
     private String any;
     private String disponibilitat; // Lo mantenemos pero ahora se obtiene de la tabla disponibilitats
     private String foto;
-
-    // Constructor
     public CategoriaModel(int id, String marca, String model, String any, String disponibilitat, String foto) {
         this.id = id;
         this.marca = marca;
@@ -17,8 +15,6 @@ public class CategoriaModel {
         this.disponibilitat = disponibilitat;
         this.foto = foto;
     }
-
-    // Constructor sin ID para nuevas categorías que aún no tienen un ID asignado
     public CategoriaModel(String marca, String model, String any, String disponibilitat, String foto) {
         this.marca = marca;
         this.model = model;
@@ -26,8 +22,6 @@ public class CategoriaModel {
         this.disponibilitat = disponibilitat;
         this.foto = foto;
     }
-
-    // Getters
     public int getId() {
         return id;
     }
@@ -51,8 +45,6 @@ public class CategoriaModel {
     public String getFoto() {
         return foto;
     }
-
-    // Setters
     public void setId(int id) {
         this.id = id;
     }

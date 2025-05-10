@@ -37,7 +37,6 @@ public class ClientsVehiclesDAO {
     }
 
     public static ArrayList<ClientsVehiclesModel> getAll() {
-        // Retorna una lista con todos los clientes
         String sql = "SELECT id, id_client, id_vehicle, observacions FROM clients_vehicles";
         AppData db = AppData.getInstance();
         ArrayList<ClientsVehiclesModel> list = new ArrayList<>();

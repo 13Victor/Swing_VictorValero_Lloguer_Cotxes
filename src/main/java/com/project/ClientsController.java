@@ -24,13 +24,9 @@ public class ClientsController {
         this.list = new ArrayList<>();
         this.tabbedPane = tabbedPane;
     }
-
-    // Accions per iniciar el controlador
     public void start() {
         setupActionListeners();
         loadData();
-        // No poseu més instruccions aquí,
-        // perquè hem obert un fil en paral·lel a 'loadData'
     }
 
     private void setupActionListeners() {
@@ -45,27 +41,14 @@ public class ClientsController {
     public void loadData() {
 
         int oldStatus = status;
-
-        // Desactiva tots els elements i mostra el 'Carregant ...'
         setStatus(STATUS_LOADING);
-
-        // Gestionar dades del DAO en una tasca paral·lela
         UtilsSwingThread.run(
             () -> {
-                // Actualitzem la llista de categories a mostrar.
                 list = ClientsDAO.getAll();
-
-                // Simula espera
                 Thread.sleep(1500);
-
-                // Definir el adreca escollit
                 if (!list.isEmpty()) {
-
-                    // Mirar si hi ha alguna categoria escollida al 'comboBox'
                     int oldSelected = view.itemComboBox.getSelectedIndex();
                     int newSelected = 0;
-
-                    // Si hi havia un adreca escollit, cal mirar quina posició té ara a la llista
                     if (oldSelected != -1) {
                         String selectedName = view.itemComboBox.getItemAt(oldSelected);
                         ClientsModel tmp = getListModelFromName(selectedName);
@@ -73,28 +56,17 @@ public class ClientsController {
                             newSelected = list.indexOf(tmp);
                         }
                     }
-                    
-                    // Elimina tots els elements existents al JComboBox
                     view.itemComboBox.removeAllItems();
-
-                    // Afegeix les noves categories rebudes al 'comboBox'
                     for (ClientsModel itemModel : list) {
                         view.itemComboBox.addItem(itemModel.getNom());
                     }
-
-                    // Selecciona el adreca escollit al 'comboBox'
                     view.itemComboBox.setSelectedIndex(newSelected);
                 }
-
-                // Activa els elements i amaga 'Carregant ...'
                 setStatus(oldStatus);
                 fillFormData();
             }
         );
-        // No posar més instruccions després del UtilsSwingThread.run
     }
-
-    // Mostra o amaga els elements segons l'estat
     private void setStatus(int newStatus) {
         Boolean isLoading = false;
 
@@ -119,15 +91,9 @@ public class ClientsController {
         view.modifyButton.setEnabled(!isLoading && status == STATUS_MODIFY);
         view.deleteButton.setEnabled(!isLoading && status == STATUS_MODIFY);
     }
-
-    // Estableix l'acció del botó 'reload'
     private void controllerReloadButtonAction(ActionEvent e) {
         loadData();
-        // 'loadData' crida a 'UtilsSwingThread.run'
-        // No posar més instruccions després del UtilsSwingThread.run
     }
-
-    // Quan s'apreta el 'checkBox' es posa en mode 'afegir' o 'modificar/esborrar'
     private void controllerNewItemCheckBoxAction (ItemEvent evt) {
         boolean isSelected = (evt.getStateChange() == ItemEvent.SELECTED);
         if (isSelected) {
@@ -139,13 +105,9 @@ public class ClientsController {
         }
         fillFormData();
     }
-
-    // Quan es canvia el valor del 'comboBox', es mostra el text sel·leccional al camp 'Nom'
     private void controllerItemComboBoxAction (ItemEvent e) {
         fillFormData();
     }
-
-    // Estableix l'acció del botó 'afegir'
     private void controllerAddButtonAction(ActionEvent e) {
         String nom = view.itemNomField.getText();
         String adreca = view.itemAdrecaField.getText();
@@ -153,75 +115,47 @@ public class ClientsController {
         ClientsModel newModel = new ClientsModel(nom, adreca, telefon);
 
         setStatus(STATUS_MODIFY);
-
-        // Gestionar dades del DAO en una tasca paral·lela
         UtilsSwingThread.run(
             () -> {
                 ClientsDAO.addItem(newModel);
-
-                // Actualitzar també el comboBox amb el nou nom 
-                // (perquè al carregar les dades quedi seleccionat)
                 int index = view.itemComboBox.getItemCount() - 1;
                 view.itemComboBox.insertItemAt(nom, index);
                 view.itemComboBox.setSelectedIndex(index);
                 view.itemNomField.setText(nom);
                 view.itemAdrecaField.setText(adreca);
                 view.itemTelefonField.setText(String.valueOf(telefon));
-
-        
-                // Actualitzar les dades normalment
                 loadData();
             }
         );
-        // No posar més instruccions després del UtilsSwingThread.run
     }
-
-    // Estableix l'acció del botó 'modificar'
     private void controllerModifyButtonAction(ActionEvent e) {
         String nom = view.itemNomField.getText();
         String adreca = view.itemAdrecaField.getText();
         int telefon = Integer.parseInt(view.itemTelefonField.getText());
         int index = view.itemComboBox.getSelectedIndex();
-
-        // Crear una categoria amb les dades modificades
         ClientsModel modifiedModel = getModelFromComboBoxIndex(index);
         modifiedModel.setNom(nom);
         modifiedModel.setAdreca(adreca);
         modifiedModel.setTelefon(telefon);
-
-        // Gestionar dades del DAO en una tasca paral·lela
         UtilsSwingThread.run(
             () -> {
                 ClientsDAO.updateItem(modifiedModel);
-
-                // Actualitzar també el comboBox amb el nou nom 
-                // (perquè al carregar les dades quedi seleccionat)
                 view.itemComboBox.removeItemAt(index);
                 view.itemComboBox.insertItemAt(nom, index);
                 view.itemComboBox.setSelectedIndex(index);
-        
-                // Actualitzar les dades normalment
                 loadData();
             }
         );
-        // No posar més instruccions després del UtilsSwingThread.run
     }
-
-    // Estableix l'acció del botó 'borrar'
     private void controllerDeleteButtonAction(ActionEvent e) {
         int index = view.itemComboBox.getSelectedIndex();
         ClientsModel modifiedModel = getModelFromComboBoxIndex(index);
-
-        // Gestionar dades del DAO en una tasca paral·lela
         UtilsSwingThread.run(
             () -> {
                 ClientsDAO.deleteItem(modifiedModel.getId());
-
-                // Actualitzar les dades normalment
                 loadData();
             }
         );
-        // No posar més instruccions després del UtilsSwingThread.run
     }
 
     private ClientsModel getModelFromComboBoxIndex(int index) {
@@ -240,8 +174,6 @@ public class ClientsController {
         }
         return rst;
     }
-
-    // Emplena els camps del formulari segons la sel·lecció de la comboBox
     private void fillFormData () {
         int selectedEntry = view.itemComboBox.getSelectedIndex();
         if (selectedEntry != -1 && status == STATUS_MODIFY) {

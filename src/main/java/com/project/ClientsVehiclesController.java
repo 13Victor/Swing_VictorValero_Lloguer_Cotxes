@@ -26,14 +26,10 @@ public class ClientsVehiclesController {
         this.listClientsVehicles = new ArrayList<>();
         this.tabbedPane = tabbedPane;
     }
-
-    // Acciones para iniciar el controlador
     public void start() {
         setupActionListeners();
         setStatus(STATUS_ADD); // Forzar estado inicial a ADD
         loadData();
-        // No pongas más instrucciones aquí,
-        // porque hemos abierto un hilo en paralelo en 'loadData'
     }
 
     private void setupActionListeners() {
@@ -46,22 +42,13 @@ public class ClientsVehiclesController {
     }
 
     public void loadData() {
-        // Gestionar datos del DAO en una tarea paralela
         UtilsSwingThread.run(() -> {
             int oldStatus = status;
-
-            // Desactiva todos los elementos y muestra el 'Cargando ...'
             setStatus(STATUS_LOADING);
-
-            // Actualizamos las listas
             listCategories = CategoriaDAO.getAll();
             listClientsVehicles = ClientsVehiclesDAO.getAll();
             listClients = ClientsDAO.getAll();
-
-            // Simula espera
             Thread.sleep(1500);
-
-            // Define el modelo elegido
             if (!listClientsVehicles.isEmpty()) {
                 int oldSelected = view.itemComboBox.getSelectedIndex();
                 int newSelected = 0;
@@ -95,7 +82,6 @@ public class ClientsVehiclesController {
             setStatus(oldStatus);
             fillFormData();
         });
-        // No poner más instrucciones después del UtilsSwingThread.run
     }
 
     private void setStatus(int newStatus) {
@@ -108,8 +94,6 @@ public class ClientsVehiclesController {
         view.newItemCheckBox.setEnabled(!isLoading);
         view.itemComboBox.setEnabled(!isLoading && status == STATUS_MODIFY);
         view.itemObservationsField.setEnabled(!isLoading);
-        
-        // Only enable vehicle/client selection when adding new observation
         view.categoryComboBox.setEnabled(!isLoading && status == STATUS_ADD);
         view.clientComboBox.setEnabled(!isLoading && status == STATUS_ADD);
         
@@ -121,13 +105,9 @@ public class ClientsVehiclesController {
     private void controllerReloadButtonAction(ActionEvent e) {
         loadData();
     }
-
-    // Fix checkbox state management
     private void controllerNewItemCheckBoxAction(ItemEvent evt) {
         boolean isNew = evt.getStateChange() == ItemEvent.SELECTED;
         setStatus(isNew ? STATUS_ADD : STATUS_MODIFY);
-        
-        // Force proper state
         view.newItemCheckBox.setSelected(isNew);
         view.itemComboBox.setEnabled(!isNew);
         view.categoryComboBox.setEnabled(isNew);

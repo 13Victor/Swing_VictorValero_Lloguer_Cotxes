@@ -5,8 +5,6 @@ import java.awt.event.WindowEvent;
 import javax.swing.SwingUtilities;
 
 public class Main {
-
-    // Crear el singleton (això es connecta a la base de dades)
     private static AppData db = AppData.getInstance();
 
     public static void main(String[] args) {
@@ -17,8 +15,6 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             MainWindow mainWindow = new MainWindow();
             mainWindow.setVisible(true);
-            
-            // Afegir un WindowListener per tancar la base de dades quan la finestra es tanca
             mainWindow.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
@@ -33,13 +29,9 @@ public class Main {
         System.out.println("Connexió amb la base de dades tancada.");
         System.exit(0);
     }
-// MODIFICACIÓN DE Main.java (método initData)
 
     public static void initData() {
-        // Obtenir un apuntador al singleton de la base de dades
         AppData db = AppData.getInstance();
-
-        // Esborrar les taules si existeixen
         db.update("DROP TABLE IF EXISTS vehicles");
         db.update("DROP TABLE IF EXISTS clients");
         db.update("DROP TABLE IF EXISTS lloguers");

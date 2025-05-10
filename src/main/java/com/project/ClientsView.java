@@ -25,17 +25,11 @@ public class ClientsView extends JPanel {
     private void initComponents() {
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         setBackground(UITheme.BACKGROUND_COLOR);
-        
-        // Usar un layout más simple y fácil de depurar
         setLayout(new BorderLayout(10, 10));
-        
-        // Panel principal de contenido que contendrá todos los elementos excepto los botones
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBackground(UITheme.BACKGROUND_COLOR);
         mainPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
-        // Título de la sección
         JLabel titleLabel = new JLabel("Gestió de Clients");
         titleLabel.setFont(UITheme.TITLE_FONT);
         titleLabel.setForeground(UITheme.PRIMARY_COLOR);
@@ -43,15 +37,11 @@ public class ClientsView extends JPanel {
         mainPanel.add(titleLabel);
         
         mainPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-        
-        // Panel de acciones con reloadButton y loadingLabel
         JPanel actionPanel = new JPanel();
         actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.X_AXIS));
         actionPanel.setBackground(UITheme.BACKGROUND_COLOR);
         actionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         actionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, reloadButton.getPreferredSize().height));
-        
-        // Aplicar estilo al botón
         UITheme.styleButton(reloadButton, UITheme.PRIMARY_COLOR);
         reloadButton.setMnemonic(KeyEvent.VK_R);
         reloadButton.setToolTipText("Actualitzar el llistat de clients (Alt+R)");
@@ -66,15 +56,11 @@ public class ClientsView extends JPanel {
         
         mainPanel.add(actionPanel);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-        
-        // Separador estilizado
         JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
         separator.setForeground(UITheme.SECONDARY_COLOR);
         separator.setAlignmentX(Component.LEFT_ALIGNMENT);
         mainPanel.add(separator);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-        
-        // Panel de selección (nuevo cliente o modificar)
         JPanel selectionPanel = new JPanel();
         selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.Y_AXIS));
         selectionPanel.setBackground(UITheme.BACKGROUND_COLOR);
@@ -89,8 +75,6 @@ public class ClientsView extends JPanel {
         selectionPanel.add(newItemCheckBox);
         mainPanel.add(selectionPanel);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        
-        // ComboBox para seleccionar clientes
         JPanel comboPanel = new JPanel();
         comboPanel.setLayout(new BoxLayout(comboPanel, BoxLayout.X_AXIS));
         comboPanel.setBackground(UITheme.BACKGROUND_COLOR);
@@ -109,8 +93,6 @@ public class ClientsView extends JPanel {
         
         mainPanel.add(comboPanel);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-        
-        // Panel de formulario principal - CORREGIDO
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setBackground(UITheme.CARD_COLOR);
@@ -119,8 +101,6 @@ public class ClientsView extends JPanel {
             BorderFactory.createEmptyBorder(15, 15, 15, 15)
         ));
         formPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
-        // Añadir campos del formulario
         JPanel nomPanel = createLabeledField("Nom:", itemNomField);
         formPanel.add(nomPanel);
         formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -133,8 +113,6 @@ public class ClientsView extends JPanel {
         formPanel.add(telefonPanel);
         
         mainPanel.add(formPanel);
-        
-        // Panel de botones
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.setBackground(UITheme.BACKGROUND_COLOR);
@@ -157,13 +135,9 @@ public class ClientsView extends JPanel {
         buttonPanel.add(modifyButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         buttonPanel.add(deleteButton);
-        
-        // Agregar los paneles principales al BorderLayout
         add(mainPanel, BorderLayout.NORTH);
         add(buttonPanel, BorderLayout.SOUTH);
     }
-
-    // Método para crear un campo con etiqueta
     private JPanel createLabeledField(String labelText, JComponent component) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
@@ -177,7 +151,6 @@ public class ClientsView extends JPanel {
         label.setLabelFor(component);
         
         if (component instanceof JTextField) {
-            // Reducir el padding en los TextField
             ((JTextField) component).setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
                 BorderFactory.createEmptyBorder(2, 3, 2, 3) // Reducir el padding

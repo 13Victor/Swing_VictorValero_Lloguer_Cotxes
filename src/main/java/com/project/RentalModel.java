@@ -6,8 +6,6 @@ public class RentalModel {
     private String data_final;
     private int id_vehicle;
     private int id_client;
-
-    // Constructor complet
     public RentalModel(int id, String data_inici, String data_final, int id_vehicle, int id_client) {
         this.id = id;
         this.data_inici = data_inici;
@@ -15,16 +13,12 @@ public class RentalModel {
         this.id_vehicle = id_vehicle;
         this.id_client = id_client;
     }
-
-    // Constructor sense ID per a nous productes que encara no tenen un ID assignat
     public RentalModel(String data_inici, String data_final, int id_vehicle, int id_client) {
         this.data_inici = data_inici;
         this.data_final = data_final;
         this.id_vehicle = id_vehicle;
         this.id_client = id_client;
     }
-
-    // Getters
     public int getId() {
         return id;
     }
@@ -44,8 +38,6 @@ public class RentalModel {
     public int getIdClient() {
         return id_client;
     }
-
-    // Setters
     public void setId(int id) {
         this.id = id;
     }

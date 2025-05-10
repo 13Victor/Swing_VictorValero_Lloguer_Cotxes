@@ -50,7 +50,6 @@ public class RentalDAO {
     }
 
     public static ArrayList<RentalModel> getAll() {
-        // Retorna una llista amb tots els productes
         String sql = "SELECT id, data_inici, data_final, id_vehicle, id_client FROM lloguers";
         AppData db = AppData.getInstance();
         ArrayList<RentalModel> list = new ArrayList<>();

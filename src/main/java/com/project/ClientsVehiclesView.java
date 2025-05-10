@@ -26,8 +26,6 @@ public class ClientsVehiclesView extends JPanel {
     private void initComponents() {
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         setBackground(UITheme.BACKGROUND_COLOR);
-
-        // Título de la sección
         JLabel titleLabel = new JLabel("Gestió d'Observacions");
         titleLabel.setFont(UITheme.TITLE_FONT);
         titleLabel.setForeground(UITheme.PRIMARY_COLOR);
@@ -35,15 +33,11 @@ public class ClientsVehiclesView extends JPanel {
         add(titleLabel);
         
         add(Box.createRigidArea(new Dimension(0, 15)));
-
-        // Panel de acciones con reloadButton y loadingLabel
         JPanel actionPanel = new JPanel();
         actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.X_AXIS));
         actionPanel.setBackground(UITheme.BACKGROUND_COLOR);
         actionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         actionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, reloadButton.getPreferredSize().height));
-        
-        // Aplicar estilo al botón
         UITheme.styleButton(reloadButton, UITheme.PRIMARY_COLOR);
         reloadButton.setMnemonic(KeyEvent.VK_R); // Alt+R para refrescar
         reloadButton.setToolTipText("Actualitzar el llistat d'observacions (Alt+R)");
@@ -58,15 +52,11 @@ public class ClientsVehiclesView extends JPanel {
         
         add(actionPanel);
         add(Box.createRigidArea(new Dimension(0, 15)));
-
-        // Separador estilizado
         JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
         separator.setForeground(UITheme.SECONDARY_COLOR);
         separator.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(separator);
         add(Box.createRigidArea(new Dimension(0, 15)));
-
-        // Panel de selección (nueva observación o modificar)
         JPanel selectionPanel = new JPanel();
         selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.Y_AXIS));
         selectionPanel.setBackground(UITheme.BACKGROUND_COLOR);
@@ -81,8 +71,6 @@ public class ClientsVehiclesView extends JPanel {
         
         selectionPanel.add(newItemCheckBox);
         add(selectionPanel);
-
-        // ComboBox para seleccionar observación
         JPanel comboPanel = new JPanel();
         comboPanel.setLayout(new BoxLayout(comboPanel, BoxLayout.X_AXIS));
         comboPanel.setBackground(UITheme.BACKGROUND_COLOR);
@@ -102,8 +90,6 @@ public class ClientsVehiclesView extends JPanel {
         
         add(comboPanel);
         add(Box.createRigidArea(new Dimension(0, 15)));
-
-        // Panel de formulario principal
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setBackground(UITheme.CARD_COLOR);
@@ -112,15 +98,11 @@ public class ClientsVehiclesView extends JPanel {
             BorderFactory.createEmptyBorder(15, 15, 15, 15)
         ));
         formPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
-        // Campos del formulario
         formPanel.add(createLabeledField("Vehicle:", categoryComboBox));
         formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         
         formPanel.add(createLabeledField("Client:", clientComboBox));
         formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        
-        // Campo de observación con área de texto más grande
         JPanel obsPanel = new JPanel();
         obsPanel.setLayout(new BoxLayout(obsPanel, BoxLayout.X_AXIS));
         obsPanel.setBackground(UITheme.CARD_COLOR);
@@ -129,8 +111,6 @@ public class ClientsVehiclesView extends JPanel {
         JLabel obsLabel = new JLabel("Observació:");
         obsLabel.setFont(UITheme.LABEL_FONT);
         obsLabel.setPreferredSize(new Dimension(100, obsLabel.getPreferredSize().height));
-        
-        // Usa JTextArea en lugar de JTextField para observaciones más largas
         JTextArea obsArea = new JTextArea();
         obsArea.setFont(UITheme.LABEL_FONT);
         obsArea.setLineWrap(true);
@@ -152,8 +132,6 @@ public class ClientsVehiclesView extends JPanel {
         
         add(formPanel);
         add(Box.createRigidArea(new Dimension(0, 20)));
-
-        // Panel de botones
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.setBackground(UITheme.BACKGROUND_COLOR);
@@ -178,12 +156,8 @@ public class ClientsVehiclesView extends JPanel {
         buttonPanel.add(deleteButton);
         
         add(buttonPanel);
-        
-        // Espacio vertical expansible al final
         add(Box.createVerticalGlue());
     }
-
-    // Método para crear un campo con etiqueta
     private JPanel createLabeledField(String labelText, JComponent component) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));

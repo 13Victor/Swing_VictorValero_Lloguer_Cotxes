@@ -37,7 +37,6 @@ public class ClientsDAO {
     }
 
     public static ArrayList<ClientsModel> getAll() {
-        // Retorna una llista amb totes les clients
         String sql = "SELECT id, nom, adreca, telefon FROM clients";
         AppData db = AppData.getInstance();
         ArrayList<ClientsModel> list = new ArrayList<>();

@@ -13,7 +13,6 @@ public class UtilsSwingThread {
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
-                // Executa la tasca de fons.
                 backgroundTask.execute();
                 return null;
             }
